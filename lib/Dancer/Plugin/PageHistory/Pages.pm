@@ -39,10 +39,14 @@ has pages => (
     is => 'rw',
     isa =>
       HashRef [ ArrayRef [ InstanceOf ['Dancer::Plugin::PageHistory::Page'] ] ],
-    coerce => sub {
-
-    },
+    coerce => \&_coerce_pages,
 );
+
+sub _coerce_pages {
+    use Data::Dumper::Concise;
+    print STDERR Dumper($_);
+
+}
 
 =head2 current_page
 
