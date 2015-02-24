@@ -7,6 +7,7 @@ Dancer::Plugin::PageHistory::Pages - Pages store for Dancer::Plugin::PageHistory
 =cut
 
 use Moo;
+use Scalar::Util qw(blessed);
 use Sub::Quote qw(quote_sub);
 use Types::Standard qw(ArrayRef HashRef InstanceOf Int);
 use namespace::clean;
@@ -43,9 +44,16 @@ has pages => (
 );
 
 sub _coerce_pages {
-    use Data::Dumper::Concise;
-    print STDERR Dumper($_);
-
+    while ( my ( $type, $pages ) = each %{ $_[0] } ) {
+      PAGE: foreach my $page (@$pages) {
+            if ( !blessed($page) ) {
+                $page =
+                  Dancer::Plugin::PageHistory::Page->new( $page->{__page__} )
+                  if $page->{__page__};
+            }
+        }
+    }
+    return $_[0];
 }
 
 =head2 current_page
