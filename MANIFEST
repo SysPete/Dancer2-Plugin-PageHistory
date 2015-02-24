@@ -1,0 +1,12 @@
+CHANGES
+lib/Dancer/Plugin/PageHistory.pm
+lib/Dancer/Plugin/PageHistory/Page.pm
+lib/Dancer/Plugin/PageHistory/Pages.pm
+Makefile.PL
+MANIFEST
+MANIFEST.SKIP
+README
+t/00-load.t
+t/manifest.t
+t/pod-coverage.t
+t/pod.t

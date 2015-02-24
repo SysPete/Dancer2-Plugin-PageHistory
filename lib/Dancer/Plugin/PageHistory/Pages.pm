@@ -1,10 +1,15 @@
-package # Hide from PAUSE
-  Dancer::Plugin::PageHistory::Pages;
+package Dancer::Plugin::PageHistory::Pages;
+
+=head1 NAME
+
+Dancer::Plugin::PageHistory::Pages - Pages store for Dancer::Plugin::PageHistory
+
+=cut
 
 use Moo;
-
-use MooX::Types::MooseLike::Base qw(ArrayRef HashRef Int);
 use Sub::Quote qw(quote_sub);
+use Types::Standard qw(ArrayRef HashRef InstanceOf Int);
+use namespace::clean;
 
 =head1 ATTRIBUTES
 
@@ -34,6 +39,9 @@ has pages => (
     is => 'rw',
     isa =>
       HashRef [ ArrayRef [ InstanceOf ['Dancer::Plugin::PageHistory::Page'] ] ],
+    coerce => sub {
+
+    },
 );
 
 =head2 current_page
@@ -112,6 +120,9 @@ sub _trigger_methods {
 
 If C<$args{type}> is not defined then we die.
 
+In addition to C<type> other arguments should be those passed to C<new> in
+L<Dancer::Plugin::PageHistory::Page>.
+
 =cut
 
 sub add {
@@ -120,17 +131,19 @@ sub add {
 
     die "type must be defined for Dancer::Plugin::PageHistory->add"
       unless $type;
-    die "uri must be defined for Dancer::Plugin::PageHistory->add"
-      unless $args{uri};
+    die "path must be defined for Dancer::Plugin::PageHistory->add"
+      unless $args{path};
+
+    my $page = Dancer::Plugin::PageHistory::Page->new( %args );
 
     if (   !$self->pages->{$type}
         || !$self->pages->{$type}->[0]
-        || $self->pages->{$type}->[0]->{uri} ne $args{uri} )
+        || $self->pages->{$type}->[0]->uri ne $page->uri )
     {
 
         # not same uri as newest items on this list so add it
 
-        unshift( @{ $self->pages->{$type} }, \%args );
+        unshift( @{ $self->pages->{$type} }, $page );
 
         # trim to max_items if necessary
         pop @{ $self->pages->{$type} }
