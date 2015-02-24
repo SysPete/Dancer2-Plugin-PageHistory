@@ -46,10 +46,10 @@ has pages => (
 sub _coerce_pages {
     while ( my ( $type, $pages ) = each %{ $_[0] } ) {
       PAGE: foreach my $page (@$pages) {
-            if ( !blessed($page) ) {
+            if ( !blessed($page) && ref($page) eq 'HASH' && $page->{__page__} )
+            {
                 $page =
-                  Dancer::Plugin::PageHistory::Page->new( $page->{__page__} )
-                  if $page->{__page__};
+                  Dancer::Plugin::PageHistory::Page->new( $page->{__page__} );
             }
         }
     }
