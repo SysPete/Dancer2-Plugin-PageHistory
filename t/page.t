@@ -1,6 +1,5 @@
 use Test::Roo;
 use Test::Exception;
-use Dancer qw(:tests !after);
 use Dancer::Plugin::PageHistory::Page;
 
 test page => sub {
