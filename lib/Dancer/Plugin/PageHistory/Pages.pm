@@ -163,4 +163,18 @@ sub add {
     }
 }
 
+=head2 types
+
+Return all of the page types currently stored in history.
+
+In array context returns an array of type names (keys of L</pages>)
+and in scalar context returns the same as an array reference.
+
+=cut
+
+sub types {
+    my $self = shift;
+    wantarray ? keys $self->pages : [ keys $self->pages ];
+}
+
 1;
