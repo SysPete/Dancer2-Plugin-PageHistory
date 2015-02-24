@@ -72,13 +72,12 @@ B<WARNING:> This attribute is not saved back to the session.
 
 has uri => (
     is => 'lazy',
-    isa => Str,
 );
 
 sub _build_uri {
     my $self = shift;
     my $uri = URI->new( $self->path );
-    $uri->query_form($self->query_params);
+    $uri->query_form($self->query);
     return $uri;
 }
 
