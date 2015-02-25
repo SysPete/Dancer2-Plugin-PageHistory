@@ -4,7 +4,7 @@ use Test::More import => ['!pass'];
 use Class::Load qw(try_load_class);
 
 my @session_engines = (
-    'Cookie',
+#    'Cookie',
     'Simple',
     'DBIC',
     'KiokuDB',

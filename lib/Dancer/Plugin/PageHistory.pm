@@ -17,6 +17,8 @@ use Dancer::Plugin;
 use Dancer::Plugin::PageHistory::PageSet;
 use Dancer::Plugin::PageHistory::Page;
 
+my $history_name = 'page_history';
+
 =head1 DESCRIPTION
 
 The C<add_to_history> keyword which is exported by this plugin allows you to 
@@ -42,7 +44,7 @@ configuration along with configuration for the plugin itself, e.g.:
       PageHistory:
         add_all_pages: 1
         ingore_ajax: 1 
-        page_history_var: someothername
+        history_name: someothername
         PageSet:
           default_type: all
           fallback_page:
@@ -70,10 +72,13 @@ L</before> hook.
 
 Defaults to 0. Set to 1 to have ajax requests ignored.
 
-=item * page_history_var
+=item * history_name
 
 This setting can be used to change the name of the C<var> used to stash
 the history object from the default C<page_history> to something else.
+This is also the key used for storing history in the session and the name
+of the token containing the history object that is passed to template
+and layout.
 
 =back
 
@@ -92,7 +97,6 @@ hook before => sub {
     return
       if ( !$conf->{add_all_pages}
         || ( $conf->{ignore_ajax} && request->is_ajax ) );
-    debug "adding current page to history in hook before";
     &add_to_history();
 };
 
@@ -104,25 +108,14 @@ Puts history into the token C<page_history>.
 
 hook before_template_render => sub {
     my $tokens = shift;
-    $tokens->{history} = &history;
-};
-
-=head2 after
-
-Save history back into session.
-
-=cut
-
-hook after => sub {
-    session page_history => &history()->pages;
+    my $name = plugin_setting->{history_name} || $history_name;
+    $tokens->{$name} = &history();
 };
 
 sub add_to_history {
-    my $var = plugin_setting->{page_history_var} || 'page_history';
+    my $name = plugin_setting->{history_name} || $history_name;
     my ( $self, @args ) = plugin_args(@_);
 
-    use Data::Dumper::Concise;
-    print STDERR Dumper(@args);
     my $path         = request->path;
     my $query_params = params('query');
 
@@ -134,38 +127,34 @@ sub add_to_history {
 
     debug "adding page to history: ", \%args;
 
-    my $history = &history;
+    my $history = &history();
+    debug "history: ", $history;
 
-    # add the page
+    # add the page, stash history in var and save back to session
     $history->add( %args );
-    var $var => $history;
+    var $name => $history;
+    session $name => $history;
 }
 
 sub history {
-    my $var = plugin_setting->{page_history_var} || 'page_history';
-    debug "var is $var in history";
-    unless ( var($var) ) {
-        debug "no var";
+    my $conf = plugin_setting;
+    my $name = $conf->{history_name} || $history_name;
+    unless ( var($name) ) {
 
-        # var history has not yet been defined so pull history from session
+        # var has not yet been defined so pull history from session
 
-        my $session_history = session('page_history');
+        my $session_history = session($name);
         $session_history = {} unless ref($session_history) eq 'HASH';
 
-        my $conf = plugin_setting;
-
-        my %args = ( pages => $session_history );
-
-        $args{max_items} = $conf->{max_items} if $conf->{max_items};
-
-        $args{methods} = $conf->{methods}
-          if ( $conf->{methods} && ref( $conf->{methods} ) eq 'ARRAY' );
+        my %args = $conf->{PageSet} ? %{$conf->{PageSet}} : ();
+        $args{pages} = $session_history;
 
         my $history = Dancer::Plugin::PageHistory::PageSet->new( %args );
 
-        var $var => $history;
+        # stash history in var
+        var $name => $history;
     }
-    return var($var);
+    return var($name);
 }
 
 register add_to_history => \&add_to_history;
