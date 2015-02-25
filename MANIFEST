@@ -8,5 +8,8 @@ MANIFEST.SKIP
 README
 t/00-load.t
 t/manifest.t
+t/page.t
+t/pageset.t
+t/plugin.t
 t/pod-coverage.t
 t/pod.t

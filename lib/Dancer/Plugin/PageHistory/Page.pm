@@ -97,6 +97,18 @@ The following predicates are defined:
 
 =back
 
+=head2 STORABLE_freeze
+
+Convert to non-obj for Storable serialisation.
+
+=cut
+
+sub STORABLE_freeze {
+    my ($self, $cloning) = @_;
+    return if $cloning;
+    return $self->TO_JSON;
+}
+
 =head2 TO_JSON
 
 Convert to non-obj for JSON serialisation.

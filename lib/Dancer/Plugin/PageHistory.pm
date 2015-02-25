@@ -15,6 +15,7 @@ our $VERSION = '0.001';
 use Dancer ':syntax';
 use Dancer::Plugin;
 use Dancer::Plugin::PageHistory::PageSet;
+use Dancer::Plugin::PageHistory::Page;
 
 =head1 DESCRIPTION
 
@@ -74,6 +75,8 @@ Defaults to 0. Set to 1 to have ajax requests ignored.
 This setting can be used to change the name of the C<var> used to stash
 the history object from the default C<page_history> to something else.
 
+=back
+
 =head1 HOOKS
 
 This plugin makes use of the following hooks:
@@ -89,7 +92,8 @@ hook before => sub {
     return
       if ( !$conf->{add_all_pages}
         || ( $conf->{ignore_ajax} && request->is_ajax ) );
-    &add_to_history;
+    debug "adding current page to history in hook before";
+    &add_to_history();
 };
 
 =head2 before_template_render
@@ -103,40 +107,45 @@ hook before_template_render => sub {
     $tokens->{history} = &history;
 };
 
-=head2 after_layout_render
+=head2 after
 
-Save history back into session as long as request is not ajax.
+Save history back into session.
 
 =cut
 
-hook after_layout_render => sub {
-    return if request->is_ajax;
-    session history => &history()->pages;
+hook after => sub {
+    session page_history => &history()->pages;
 };
 
 sub add_to_history {
+    my $var = plugin_setting->{page_history_var} || 'page_history';
     my ( $self, @args ) = plugin_args(@_);
 
+    use Data::Dumper::Concise;
+    print STDERR Dumper(@args);
     my $path         = request->path;
     my $query_params = params('query');
-
 
     my %args = (
         path         => $path,
         query_params => $query_params,
-        uri          => uri_for( $path, $query_params )->path_query,
         @args,
     );
+
+    debug "adding page to history: ", \%args;
 
     my $history = &history;
 
     # add the page
     $history->add( %args );
+    var $var => $history;
 }
 
 sub history {
     my $var = plugin_setting->{page_history_var} || 'page_history';
+    debug "var is $var in history";
     unless ( var($var) ) {
+        debug "no var";
 
         # var history has not yet been defined so pull history from session
 
