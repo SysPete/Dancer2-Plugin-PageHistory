@@ -1,7 +1,7 @@
 CHANGES
 lib/Dancer/Plugin/PageHistory.pm
 lib/Dancer/Plugin/PageHistory/Page.pm
-lib/Dancer/Plugin/PageHistory/Pages.pm
+lib/Dancer/Plugin/PageHistory/PageSet.pm
 Makefile.PL
 MANIFEST
 MANIFEST.SKIP

@@ -1,8 +1,8 @@
-package Dancer::Plugin::PageHistory::Pages;
+package Dancer::Plugin::PageHistory::PageSet;
 
 =head1 NAME
 
-Dancer::Plugin::PageHistory::Pages - Pages store for Dancer::Plugin::PageHistory
+Dancer::Plugin::PageHistory::PageSet - collection of pages with accessors
 
 =cut
 
@@ -56,26 +56,6 @@ sub _coerce_pages {
     return $_[0];
 }
 
-=head2 current_page
-
-Returns the first page from L</pages> of type C<all>.  Returns undef if
-L</pages> has no C<type> named C<all>.
-
-=cut
-
-has current_page => (
-    is => 'lazy',
-    isa => HashRef,
-);
-
-sub _build_current_page {
-    my $self = shift;
-    if ( defined $self->pages->{all} ) {
-        return $self->pages->{all}->[0];
-    }
-    return undef;
-}
-
 =head2 previous_page
 
 Returns the second page from L</pages> of type C<all>. Returns undef if
@@ -119,9 +99,8 @@ sub _trigger_methods {
     my ( $self, $methods ) = @_;
     foreach my $method ( @$methods ) {
         unless ( $self->can( $method )) {
-            quote_sub "Dancer::Plugin::PageHistory::Pages::$method",
-              q{ return shift->pages->{$method}; },
-              { '$method' => \$method };
+            quote_sub "Dancer::Plugin::PageHistory::PageSet::$method",
+              q{ return shift->pages->{$type}; }, { '$type' => \$method };
         }
     }
 }
@@ -141,9 +120,9 @@ sub add {
     my ( $self, %args ) = @_;
     my $type = delete $args{type};
 
-    die "type must be defined for Dancer::Plugin::PageHistory->add"
+    die "type must be defined for Dancer::Plugin::PageHistory::PageSet->add"
       unless $type;
-    die "path must be defined for Dancer::Plugin::PageHistory->add"
+    die "path must be defined for Dancer::Plugin::PageHistory-::PageSet>add"
       unless $args{path};
 
     my $page = Dancer::Plugin::PageHistory::Page->new( %args );
@@ -161,6 +140,25 @@ sub add {
         pop @{ $self->pages->{$type} }
           if @{ $self->pages->{$type} } > $self->max_items;
     }
+}
+
+=head2 current_page($type)
+
+Returns the first page from L</pages> of type C<$type>. If C<$type> is not
+supplied the default type C<all> will be used. If page is not found then
+a 
+L</pages> has no C<type> named C<all>.
+
+=cut
+
+sub current_page {
+    my ( $self, $type ) = @_;
+    $type = 'all' unless $type;
+
+    if ( defined $self->pages->{$type} ) {
+        return $self->pages->{$type}->[0];
+    }
+    return undef;
 }
 
 =head2 types
