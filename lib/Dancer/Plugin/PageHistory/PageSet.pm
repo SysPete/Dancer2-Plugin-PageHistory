@@ -9,10 +9,51 @@ Dancer::Plugin::PageHistory::PageSet - collection of pages with accessors
 use Moo;
 use Scalar::Util qw(blessed);
 use Sub::Quote qw(quote_sub);
-use Types::Standard qw(ArrayRef HashRef InstanceOf Int);
+use Types::Standard qw(ArrayRef HashRef InstanceOf Int Maybe Str);
 use namespace::clean;
 
 =head1 ATTRIBUTES
+
+=head2 default_type
+
+For all methods that expect an argument C<type> then this C<default_type>
+will be the one used when C<type> is not specified. Defaults to C<default>.
+
+=cut
+
+has default_type => (
+    is => 'ro',
+    isa => Str,
+    default => 'default',
+);
+
+=head2 fallback_page
+
+In the event that L</current_page> or L</previous_page> have no page to
+return then L</fallback_page> is returned instead.
+
+By default this is set to undef.
+
+You can set this page to something else by passing any of the following as
+the value of this attribute:
+
+=over
+
+=item * a hash reference to be passed to Dancer::Plugin::PageHistory::Page->new
+
+=item * a Dancer::Plugin::PageHistory::Page object
+
+=back
+
+=cut
+
+has fallback_page => (
+    is      => 'ro',
+    isa     => Maybe [ InstanceOf ['Dancer::Plugin::PageHistory::Page'] ],
+    default => undef,
+    coerce =>
+      sub { $_[0] ? Dancer::Plugin::PageHistory::Page->new( %{$_[0]} ) : undef },
+);
 
 =head2 max_items
 
@@ -30,9 +71,9 @@ has max_items => (
 
 A hash reference of arrays of hash references.
 
-Primary key is the history C<type> such as C<all> or C<product>. For each 
-C<type> an array reference of pages is stored with newest pages added at 
-the start of the list.
+Primary key is the history C<type> such as C<default> or C<product>. For each 
+C<type> an array reference of pages is stored with new pages added at 
+the start of the array reference.
 
 =cut
 
@@ -41,6 +82,7 @@ has pages => (
     isa =>
       HashRef [ ArrayRef [ InstanceOf ['Dancer::Plugin::PageHistory::Page'] ] ],
     coerce => \&_coerce_pages,
+    predicate => 1,
 );
 
 sub _coerce_pages {
@@ -54,26 +96,6 @@ sub _coerce_pages {
         }
     }
     return $_[0];
-}
-
-=head2 previous_page
-
-Returns the second page from L</pages> of type C<all>. Returns undef if
-L</pages> has no C<type> named C<all>.
-
-=cut
-
-has previous_page => (
-    is  => 'lazy',
-    isa => HashRef,
-);
-
-sub _build_previous_page {
-    my $self = shift;
-    if ( defined $self->pages->{all} ) {
-        return $self->pages->{all}->[1];
-    }
-    return undef;
 }
 
 =head2 methods
@@ -109,7 +131,7 @@ sub _trigger_methods {
 
 =head2 add( %args )
 
-If C<$args{type}> is not defined then we die.
+C<$args{type}> defaults to L</default_type>.
 
 In addition to C<type> other arguments should be those passed to C<new> in
 L<Dancer::Plugin::PageHistory::Page>.
@@ -118,12 +140,10 @@ L<Dancer::Plugin::PageHistory::Page>.
 
 sub add {
     my ( $self, %args ) = @_;
-    my $type = delete $args{type};
 
-    die "type must be defined for Dancer::Plugin::PageHistory::PageSet->add"
-      unless $type;
-    die "path must be defined for Dancer::Plugin::PageHistory-::PageSet>add"
-      unless $args{path};
+    my $type = delete $args{type} || $self->default_type;
+
+    die "args to add must include a defined path" unless defined $args{path};
 
     my $page = Dancer::Plugin::PageHistory::Page->new( %args );
 
@@ -142,23 +162,53 @@ sub add {
     }
 }
 
+=head2 has_pages
+
+Predicate on L</pages>.
+
+=head2 page_index($index, $type)
+
+Returns the page from L</pages> of type C<$type> at position C<$index>.
+If C<$type> is not supplied then L</default_type> will be used.
+If page is not found then L</fallback_page> is returned instead.
+
+=cut
+
+sub page_index {
+    my ( $self, $index, $type ) = @_;
+
+    die "index arg must be supplied to page_index" unless defined $index;
+    $type = $self->default_type unless $type;
+
+    if ( $self->has_pages && defined $self->pages->{$type}->[$index] ) {
+        return $self->pages->{$type}->[$index];
+    }
+    return $self->fallback_page;
+}
+
+
 =head2 current_page($type)
 
-Returns the first page from L</pages> of type C<$type>. If C<$type> is not
-supplied the default type C<all> will be used. If page is not found then
-a 
-L</pages> has no C<type> named C<all>.
+A convenience method equivalent to:
+
+    page_index(0, $type)
 
 =cut
 
 sub current_page {
-    my ( $self, $type ) = @_;
-    $type = 'all' unless $type;
+    return shift->page_index( 0, shift );
+}
 
-    if ( defined $self->pages->{$type} ) {
-        return $self->pages->{$type}->[0];
-    }
-    return undef;
+=head2 previous_page
+
+A convenience method equivalent to:
+
+    page_index(1, $type)
+
+=cut
+
+sub previous_page {
+    return shift->page_index( 1, shift );
 }
 
 =head2 types
