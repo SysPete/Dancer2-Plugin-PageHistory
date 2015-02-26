@@ -102,24 +102,15 @@ throws_ok(
 $data = {
     default => [
         {
-            '__page__' => {
-                'attributes' => { 'foo' => 'bar' },
-                'path'       => '/some/path',
-                'query' => { 'a' => 123, 'b' => 456 },
-                'title' => 'Some page'
-            }
+            'attributes' => { 'foo' => 'bar' },
+            'path'       => '/some/path',
+            'query' => { 'a' => 123, 'b' => 456 },
+            'title' => 'Some page'
         },
-        {
-            '__page__' =>
-              { 'path' => '/another/path', 'title' => 'Another page' }
-        },
+        { 'path' => '/another/path', 'title' => 'Another page' },
     ],
-    bananas => [
-        {
-            '__page__' =>
-              { 'path' => '/another/banana', 'title' => 'Another banana' }
-        },
-    ],
+    bananas =>
+      [ { 'path' => '/another/banana', 'title' => 'Another banana' }, ],
 };
 
 lives_ok(

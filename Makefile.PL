@@ -27,7 +27,7 @@ WriteMakefile(
         'Type::Tiny'       => 0,
       },
     dist      => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean      => { FILES => 'Dancer-Plugin-PageHistory-*' },
+    clean      => { FILES => 'Dancer-Plugin-PageHistory-* t/TestApp/sessions' },
     META_MERGE => {
         resources => {
             repository =>

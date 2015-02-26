@@ -46,7 +46,6 @@ Query parameters as a hash reference.
 has query => (
     is        => 'ro',
     isa       => HashRef,
-    predicate => 1,
 );
 
 =head2 title
@@ -61,31 +60,11 @@ has title => (
     predicate => 1,
 );
 
-=head2 uri
-
-This does not need to be supplied to C<new> since it is constructed lazily
-from L</path> and L</query>.
-
-B<WARNING:> This attribute is not saved back to the session.
-
-=cut
-
-has uri => (
-    is => 'lazy',
-);
-
-sub _build_uri {
-    my $self = shift;
-    my $uri = URI->new( $self->path );
-    $uri->query_form($self->query);
-    return $uri;
-}
-
 =head1 METHODS
 
 =head2 predicates
 
-The following predicates are defined:
+The following predicate methods are defined:
 
 =over
 
@@ -93,9 +72,20 @@ The following predicates are defined:
 
 =item * has_title
 
-=item * has_query
-
 =back
+
+=head2 uri
+
+Returns the string URI for L</path> and L</query>.
+
+=cut
+
+sub uri {
+    my $self = shift;
+    my $uri = URI->new( $self->path );
+    $uri->query_form($self->query);
+    return $uri->as_string;
+}
 
 =head2 STORABLE_freeze
 
@@ -106,7 +96,13 @@ Convert to non-obj for Storable serialisation.
 sub STORABLE_freeze {
     my ($self, $cloning) = @_;
     return if $cloning;
-    return $self->TO_JSON;
+    return (undef, $self->to_hashref);
+}
+
+sub STORABLE_thaw {
+    my ($self, $cloning, undef, $data) = @_;
+    return if $cloning;
+    %{$self} = %$data;
 }
 
 =head2 TO_JSON
@@ -116,14 +112,20 @@ Convert to non-obj for JSON serialisation.
 =cut
 
 sub TO_JSON {
+    return shift->to_hashref;
+}
+sub FREEZE {
+    return shift->to_hashref;
+}
+
+sub to_hashref {
     my $self = shift;
     my %ret = ( path => $self->path );
 
     $ret{attributes} = $self->attributes if $self->has_attributes;
-    $ret{query}      = $self->query      if $self->has_query;
+    $ret{query}      = $self->query;
     $ret{title}      = $self->title      if $self->has_title;
-
-    return { __page__ => \%ret };
+    return \%ret;
 }
 
 1;

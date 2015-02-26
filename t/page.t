@@ -62,7 +62,7 @@ isa_ok( $page, "Dancer::Plugin::PageHistory::Page", "page class" );
 
 can_ok(
     $page, qw(attributes path query title uri has_attributes
-      has_title has_query TO_JSON)
+      has_title TO_JSON)
 );
 
 cmp_ok( $page->path, "eq", "/some/path", "path is OK" );
@@ -72,8 +72,6 @@ cmp_ok( $page->uri, "eq", "/some/path", "uri is OK" );
 ok( !$page->has_attributes, "has_attributes false" );
 
 ok( !$page->has_title, "has_title false" );
-
-ok( !$page->has_query, "has_query false" );
 
 lives_ok(
     sub {
@@ -102,8 +100,6 @@ is_deeply( $page->attributes, { foo => "bar" }, "attribues is OK" );
 ok( $page->has_title, "has_title true" );
 
 cmp_ok( $page->title, "eq", "Some page", "title is OK" );
-
-ok( $page->has_query, "has_query true" );
 
 is_deeply( $page->query, { a => 123, b => 456 }, "query is OK" );
 

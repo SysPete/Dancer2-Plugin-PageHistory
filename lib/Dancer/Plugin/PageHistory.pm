@@ -116,24 +116,23 @@ sub add_to_history {
     my $name = plugin_setting->{history_name} || $history_name;
     my ( $self, @args ) = plugin_args(@_);
 
-    my $path         = request->path;
-    my $query_params = params('query');
+    my $path  = request->path;
+    my $query = params('query');
 
     my %args = (
-        path         => $path,
-        query_params => $query_params,
+        path  => $path,
+        query => $query,
         @args,
     );
 
     debug "adding page to history: ", \%args;
 
     my $history = &history();
-    debug "history: ", $history;
 
-    # add the page, stash history in var and save back to session
+    # add the page, stash history in var and save pages back to session
     $history->add( %args );
     var $name => $history;
-    session $name => $history;
+    session $name => $history->pages;
 }
 
 sub history {
