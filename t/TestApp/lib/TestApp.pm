@@ -11,6 +11,7 @@ my $fh = File::Temp->new(
     TMPDIR   => 1,
 );
 
+set template => 'simple';
 set plugins => {
     DBIC => {
         default => {
@@ -18,7 +19,6 @@ set plugins => {
             schema_class => "TestApp::Schema",
         }
     },
-
     PageHistory => {
         add_all_pages => 1,
         ignore_ajax   => 1,
@@ -33,7 +33,6 @@ get '/' => sub {
 
 get '/**' => sub {
     my $history = history;
-    debug $history;
     return history;
 };
 

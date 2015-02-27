@@ -4,3 +4,4 @@
 ^.*.old
 .gitignore
 .travis.yml
+t/TestApp/sessions

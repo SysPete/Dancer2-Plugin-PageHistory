@@ -13,3 +13,7 @@ t/pageset.t
 t/plugin.t
 t/pod-coverage.t
 t/pod.t
+t/TestApp/views/index
+t/TestApp/lib/TestApp/Schema/Result/Session.pm
+t/TestApp/lib/TestApp/Schema.pm
+t/TestApp/lib/TestApp.pm

@@ -15,16 +15,29 @@ BEGIN {
       File::Spec->rel2abs( File::Spec->catdir( 't', 'TestApp' ) );
 }
 
+my $release = $ENV{RELEASE_TESTING};
 
 use Data::Dumper::Concise;
 
+#set logger => 'console';
+#set log => 'debug';
 
-# not yet supported: KiokuDB 
+# not yet supported: KiokuDB Memcached MongoDB PSGI
 my @session_engines = (
     qw/
-      Cookie DBIC Memcached MongoDB PSGI Simple Storable YAML
+      Cookie DBIC Simple Storable YAML
       /
 );
+
+sub fail_or_diag {
+    my $msg = shift;
+    if ( $release ) {
+        fail $msg;
+    }
+    else {
+        diag $msg;
+    }
+}
 
 sub run_tests {
     my $engine = shift;
@@ -38,11 +51,11 @@ sub run_tests {
     }
     elsif ( $engine eq 'DBIC' ) {
         unless ( try_load_class('Dancer::Plugin::DBIC') ) {
-            diag "Dancer::Plugin::DBIC needed for this test";
+            &fail_or_diag("Dancer::Plugin::DBIC needed for this test");
             return;
         }
         unless ( try_load_class('DBD::SQLite') ) {
-            diag "Dancer::Plugin::DBIC needed for this test";
+            &fail_or_diag("Dancer::Plugin::DBIC needed for this test");
         }
         use Dancer::Plugin::DBIC;
         use TestApp::Schema;
@@ -50,21 +63,19 @@ sub run_tests {
         set session => 'DBIC';
         set session_options => { schema => schema };
     }
-    elsif ( $engine eq 'KiokuDB' ) {
-        diag "$engine not yet supported";
-        return;
-    }
-    elsif ( $engine eq 'Memcached' ) {
-        diag "$engine not yet supported";
-        return;
-    }
     elsif ( $engine eq 'MongoDB' ) {
-        diag "$engine not yet supported";
-        return;
-    }
-    elsif ( $engine eq 'PSGI' ) {
-        diag "$engine not yet supported";
-        return;
+        my $conn;
+        eval { $conn = MongoDB::Connection->new; };
+        if ($@) {
+            &fail_or_diag("MongoDB needs to be running for this test.");
+            return;
+        }
+        set mongodb_session_db => 'test_dancer_plugin_pagehistory';
+        set mongodb_auto_reconnect => 0;
+        set session => 'MongoDB';
+        my $engine;
+        lives_ok( sub { $engine = Dancer::Session::MongoDB->create },
+            "create mongodb" );
     }
     elsif ( $engine eq 'Simple' ) {
         set session => 'Simple';
@@ -82,19 +93,13 @@ sub run_tests {
     # so to make sure the code is behaving we need to undef it before we
     # make a request
 
-    if ( $engine eq 'KiokuDB' ) {
-        set logger => 'console';
-        set log => 'debug';
-    }
     var page_history => undef;
     $resp = dancer_response GET => '/one';
     response_status_is $resp => 200, 'GET /one status is ok';
 
+    isa_ok( session, "Dancer::Session::$engine" );
+
     $history = $resp->content;
-    if ( $engine eq 'KiokuDB' ) {
-        print STDERR Dumper( $history );
-        return;
-    }
     cmp_ok( @{ $history->default }, '==', 1, "1 page type default" );
     cmp_ok( $history->current_page->uri, "eq", "/one", "current_page OK" );
     ok( !defined $history->previous_page, "previous_page undef" );
@@ -139,7 +144,7 @@ foreach my $engine (@session_engines) {
 
     my $session_class = "Dancer::Session::$engine";
     unless ( try_load_class($session_class) ) {
-        if ( $ENV{RELEASE_TESTING} ) {
+        if ( $release ) {
             fail "$session_class missing";
         }
         else {

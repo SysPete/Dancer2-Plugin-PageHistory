@@ -99,6 +99,12 @@ sub STORABLE_freeze {
     return (undef, $self->to_hashref);
 }
 
+=head2 STORABLE_thaw
+
+Thaw from Storable.
+
+=cut
+
 sub STORABLE_thaw {
     my ($self, $cloning, undef, $data) = @_;
     return if $cloning;
@@ -114,9 +120,12 @@ Convert to non-obj for JSON serialisation.
 sub TO_JSON {
     return shift->to_hashref;
 }
-sub FREEZE {
-    return shift->to_hashref;
-}
+
+=head2 to_hashref
+
+Convert to hash reference for use by other serializer methods.
+
+=cut
 
 sub to_hashref {
     my $self = shift;
