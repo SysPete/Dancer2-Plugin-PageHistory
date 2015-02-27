@@ -106,12 +106,10 @@ is_deeply( $page->query, { a => 123, b => 456 }, "query is OK" );
 is_deeply(
     $page->TO_JSON,
     {
-        '__page__' => {
-            'attributes' => { 'foo' => 'bar' },
-            'path'       => '/some/path',
-            'query' => { 'a' => 123, 'b' => 456 },
-            'title' => 'Some page'
-        }
+        'attributes' => { 'foo' => 'bar' },
+        'path'       => '/some/path',
+        'query' => { 'a' => 123, 'b' => 456 },
+        'title' => 'Some page'
     },
     "TO_JSON is OK"
 );
