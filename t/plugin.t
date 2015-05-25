@@ -48,16 +48,20 @@ sub run_tests {
     my ( $history, $resp );
 
     if ( $engine eq 'Cookie' ) {
+        unless ( try_load_class('Dancer::Session::Cookie') ) {
+            &fail_or_diag("Dancer::Session::Cookie needed for this test");
+            return;
+        }
         set session_cookie_key => 'notagood secret';
         set session            => 'cookie';
     }
     elsif ( $engine eq 'DBIC' ) {
-        unless ( try_load_class('Dancer::Plugin::DBIC') ) {
-            &fail_or_diag("Dancer::Plugin::DBIC needed for this test");
+        unless ( try_load_class('Dancer::Session::DBIC') ) {
+            &fail_or_diag("Dancer::Session::DBIC needed for this test");
             return;
         }
         unless ( try_load_class('DBD::SQLite') ) {
-            &fail_or_diag("Dancer::Plugin::DBIC needed for this test");
+            &fail_or_diag("DBD::SQLite needed for this test");
         }
         use Dancer::Plugin::DBIC;
         use TestApp::Schema;
@@ -66,9 +70,17 @@ sub run_tests {
         set session_options => { schema => schema };
     }
     elsif ( $engine eq 'JSON' ) {
+        unless ( try_load_class('Dancer::Session::JSON') ) {
+            &fail_or_diag("Dancer::Session::JSON needed for this test");
+            return;
+        }
         set session => 'JSON';
     }
     elsif ( $engine eq 'MongoDB' ) {
+        unless ( try_load_class('Dancer::Session::MongoDB') ) {
+            &fail_or_diag("Dancer::Session::MongoDB needed for this test");
+            return;
+        }
         my $conn;
         eval { $conn = MongoDB::Connection->new; };
         if ($@) {
@@ -86,6 +98,10 @@ sub run_tests {
         set session => 'Simple';
     }
     elsif ( $engine eq 'Storable' ) {
+        unless ( try_load_class('Dancer::Session::Storable') ) {
+            &fail_or_diag("Dancer::Session::Storable needed for this test");
+            return;
+        }
         set session => 'Storable';
     }
     elsif ( $engine eq 'YAML' ) {
