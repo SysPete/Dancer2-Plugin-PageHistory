@@ -56,12 +56,17 @@ sub run_tests {
         set session            => 'cookie';
     }
     elsif ( $engine eq 'DBIC' ) {
+        unless ( try_load_class('Dancer::Plugin::DBIC') ) {
+            &fail_or_diag("Dancer::Plugin::DBIC needed for this test");
+            return;
+        }
         unless ( try_load_class('Dancer::Session::DBIC') ) {
             &fail_or_diag("Dancer::Session::DBIC needed for this test");
             return;
         }
         unless ( try_load_class('DBD::SQLite') ) {
             &fail_or_diag("DBD::SQLite needed for this test");
+            return;
         }
         use Dancer::Plugin::DBIC;
         use TestApp::Schema;
