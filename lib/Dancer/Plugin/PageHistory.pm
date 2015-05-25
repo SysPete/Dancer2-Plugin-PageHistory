@@ -26,11 +26,23 @@ add interesting items to the history lists. We also export the C<history>
 keyword which returns the current L<Dancer::Plugin::PageHistory::PageSet>
 object.
 
-Page history from the session is not loaded until one of the keywords is called.
-Once one has been called the <Dancer::Plugin::PageHistory::PageSet> object
-is stashed in the L<var|Dancer/var> named C<page_history>.
-See L</page_history_var> under </CONFIGURATION> below for how to change the
-name of the C<var> that is used.
+=head1 SUPPORTED SESSION ENGINES
+
+=over 4
+
+=item * L<Cookie|Dancer::Session::Cookie>
+
+=item * L<DBIC|Dancer::Session::DBIC>
+
+=item * L<JSON|Dancer::Session::JSON>
+
+=item * L<Simple|Dancer::Session::Simple>
+
+=item * L<Storable|Dancer::Session::Storable>
+
+=item * L<YAML|Dancer::Session::YAML>
+
+=back
 
 =head1 CONFIGURATION
 
@@ -74,11 +86,10 @@ Defaults to 0. Set to 1 to have ajax requests ignored.
 
 =item * history_name
 
-This setting can be used to change the name of the C<var> used to stash
-the history object from the default C<page_history> to something else.
-This is also the key used for storing history in the session and the name
-of the token containing the history object that is passed to template
-and layout.
+This setting can be used to change the name of the key used to store
+the history object in the session from the default C<page_history> to
+something else. This is also the key used for name of the token
+containing the history object that is passed to templates.
 
 =back
 
@@ -97,7 +108,7 @@ hook before => sub {
     return
       if ( !$conf->{add_all_pages}
         || ( $conf->{ignore_ajax} && request->is_ajax ) );
-    &add_to_history();
+    add_to_history();
 };
 
 =head2 before_template_render
@@ -109,7 +120,7 @@ Puts history into the token C<page_history>.
 hook before_template_render => sub {
     my $tokens = shift;
     my $name = plugin_setting->{history_name} || $history_name;
-    $tokens->{$name} = &history();
+    $tokens->{$name} = history();
 };
 
 sub add_to_history {
@@ -129,31 +140,24 @@ sub add_to_history {
 
     my $history = &history();
 
-    # add the page, stash history in var and save pages back to session
+    # add the page and save back to session
     $history->add( %args );
-    var $name => $history;
     session $name => $history->pages;
 }
 
 sub history {
     my $conf = plugin_setting;
     my $name = $conf->{history_name} || $history_name;
-    unless ( var($name) ) {
 
-        # var has not yet been defined so pull history from session
+    my $session_history = session($name);
+    $session_history = {} unless ref($session_history) eq 'HASH';
 
-        my $session_history = session($name);
-        $session_history = {} unless ref($session_history) eq 'HASH';
+    my %args = $conf->{PageSet} ? %{ $conf->{PageSet} } : ();
+    $args{pages} = $session_history;
 
-        my %args = $conf->{PageSet} ? %{$conf->{PageSet}} : ();
-        $args{pages} = $session_history;
+    my $history = Dancer::Plugin::PageHistory::PageSet->new(%args);
 
-        my $history = Dancer::Plugin::PageHistory::PageSet->new( %args );
-
-        # stash history in var
-        var $name => $history;
-    }
-    return var($name);
+    return $history;
 }
 
 register add_to_history => \&add_to_history;
@@ -161,6 +165,60 @@ register add_to_history => \&add_to_history;
 register history => \&history;
 
 register_plugin;
-1;
-__END__
 
+=head1 TODO
+
+=over
+
+=item * Add more tests
+
+=item * Add support for more session engines
+
+=item * Create Dancer2 plugin
+
+=back
+
+=head1 AUTHOR
+
+Peter Mottram (SysPete), "peter@sysnix.com"
+
+=head1 BUGS
+
+This is BETA software so bugs and missing features are expected.
+
+Please report any bugs or feature requests via the project's GitHub
+issue tracker:
+
+L<https://github.com/SysPete/Dancer-Plugin-PageHistory/issues>
+
+I will be notified, and then you'll automatically be notified of
+progress on your bug as I make changes.
+
+=head1 SUPPORT
+
+You can find documentation for this module with the perldoc command.
+
+    perldoc Dancer::Plugin::PageHistory
+
+You can also look for information at:
+
+=over 4
+
+=item * L<GitHub repository|https://github.com/SysPete/Dancer-Plugin-PageHistory>
+
+=item * L<meta::cpan|https://metacpan.org/pod/Dancer::Plugin::PageHistory>
+
+=back
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2015 Peter Mottram (SysPete).
+
+This program is free software; you can redistribute it and/or modify
+it under the same terms as the Perl 5 programming language system itself.
+
+See http://dev.perl.org/licenses/ for more information.
+
+=cut
+
+1; # End of Dancer::Plugin::PageHistory

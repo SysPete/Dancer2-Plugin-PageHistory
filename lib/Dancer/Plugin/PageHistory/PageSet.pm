@@ -29,7 +29,7 @@ has default_type => (
 
 =head2 fallback_page
 
-In the event that L</current_page> or L</previous_page> have no page to
+In the event that L</latest_page> or L</previous_page> have no page to
 return then L</fallback_page> is returned instead.
 
 By default this is set to undef.
@@ -186,7 +186,7 @@ sub page_index {
 }
 
 
-=head2 current_page($type)
+=head2 latest_page($type)
 
 A convenience method equivalent to:
 
@@ -194,7 +194,7 @@ A convenience method equivalent to:
 
 =cut
 
-sub current_page {
+sub latest_page {
     return shift->page_index( 0, shift );
 }
 
@@ -221,7 +221,7 @@ and in scalar context returns the same as an array reference.
 
 sub types {
     my $self = shift;
-    wantarray ? keys $self->pages : [ keys $self->pages ];
+    wantarray ? keys %{$self->pages} : [ keys %{$self->pages} ];
 }
 
 1;

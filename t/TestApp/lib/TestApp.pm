@@ -11,7 +11,6 @@ my $fh = File::Temp->new(
     TMPDIR   => 1,
 );
 
-set template => 'simple';
 set plugins => {
     DBIC => {
         default => {
@@ -27,14 +26,22 @@ set plugins => {
 };
 
 get '/' => sub {
-    return "bananas";
+    info setting('conffile');
+    info config;
     template 'index';
+};
+
+get '/manual/**' => sub { 
+    add_to_history;
+    my $history = history;
+    return $history;
 };
 
 get '/**' => sub {
     my $history = history;
-    return history;
+    return $history;
 };
+
 
 
 true;

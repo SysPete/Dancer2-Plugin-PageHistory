@@ -4,11 +4,16 @@ use Test::More import => ['!pass'];
 use Test::Exception;
 use Class::Load qw(try_load_class);
 use File::Spec;
-use File::Temp;
-use Dancer qw(:tests);
+use Data::Dumper::Concise;
 
 use lib File::Spec->catdir( 't', 'TestApp', 'lib' );
-use TestApp;
+use Plack::Builder;
+use Dancer ':syntax';
+use Dancer::Handler;
+use Dancer::Plugin::PageHistory;
+use Plack::Test;
+use HTTP::Request::Common;
+use HTTP::Cookies;
 
 BEGIN {
     $ENV{DANCER_APPDIR} =
@@ -17,19 +22,108 @@ BEGIN {
 
 my $release = $ENV{RELEASE_TESTING};
 
-set session_dir => File::Temp::newdir(
-    '_dpph_test.XXXX',
-    CLEANUP => 1,
-    EXLOCK  => 0,
-    DIR     => File::Spec->tmpdir,
-);
+my $app = sub {
+    set appdir      => $ENV{DANCER_APPDIR};
+    set environment => 'PSGI';
 
-# not yet supported: CHI KiokuDB Memcached MongoDB PSGI
-my @session_engines = (
-    qw/
-      Cookie DBIC JSON Simple Storable YAML
-      /
-);
+    set logger => 'console';
+    set log => 'error';
+    load_app "TestApp";
+    Dancer::App->set_running_app("TestApp");
+    my $env = shift;
+    Dancer::Handler->init_request_headers($env);
+    my $request = Dancer::Request->new( env => $env );
+    Dancer->dance($request);
+};
+
+my $builder = Plack::Builder->new;
+
+$builder->add_middleware( "Session", store => "File" );
+#$builder->add_middleware("Session");
+$builder->mount( '/' => $app );
+
+my $jar  = HTTP::Cookies->new;
+my $test = Plack::Test->create( $builder->to_app );
+
+my ( $history, $req, $res );
+
+subtest 'get /' => sub {
+    my $res = $test->request( GET '/' );
+    ok( $res->is_success );
+    $jar->extract_cookies($res);
+    diag $jar->as_string;
+    diag to_dumper history;
+};
+
+subtest 'get /one' => sub {
+    my $req = GET '/one';
+    $jar->add_cookie_header($req);
+    my $res = $test->request($req);
+    ok( $res->is_success );
+    diag $jar->as_string;
+    my $history = $res->content;
+    print STDERR Dumper($history);
+    diag to_dumper history;
+};
+
+subtest 'get /two' => sub {
+    my $req = GET '/two';
+    $jar->add_cookie_header($req);
+    my $res = $test->request($req);
+    ok( $res->is_success );
+    diag $jar->as_string;
+    my $history = $res->content;
+    print STDERR Dumper($history);
+};
+
+done_testing;
+__END__
+
+#diag $history;
+#print STDERR Dumper( history );
+#cmp_ok( @{ history->default }, '==', 1, "1 page type default" );
+#cmp_ok( history->current_page->uri, "eq", "/one", "current_page OK" );
+#ok( !defined history->previous_page, "previous_page undef" );
+
+$resp    = myget('/two');
+$history = $resp->content;
+diag $jar->as_string;
+
+#diag $history;
+#cmp_ok( @{ history->default }, '==', 2, "2 pages type default" );
+#cmp_ok( history->current_page->uri, "eq", "/two", "current_page OK" );
+#cmp_ok( history->previous_page->uri, "eq", "/one", "previous_page OK" );
+
+$resp    = myget('/three?q=we');
+$resp    = myget('/');
+$history = $resp->content;
+diag $jar->as_string;
+
+#diag $history;
+#cmp_ok( @{ history->default }, '==', 3, "3 pages type default" );
+#cmp_ok( history->current_page->uri, "eq", "/three?q=we", "current_page OK" );
+#cmp_ok( history->previous_page->uri, "eq", "/two", "previous_page OK" );
+
+done_testing;
+__END__
+    if ( $engine eq 'Cookie' ) {
+        # ugly hack
+        set session_cookie_key => 'anewsecret';
+    }
+    lives_ok( sub { session->destroy }, "destroy session" );
+
+    var page_history => undef;
+    $resp = dancer_response GET => '/one';
+    response_status_is $resp => 200, 'GET /one status is ok';
+
+    $history = $resp->content;
+    cmp_ok( @{ $history->default }, '==', 1, "1 page type default" );
+    cmp_ok( $history->current_page->uri, "eq", "/one", "current_page OK" );
+    ok( !defined $history->previous_page, "previous_page undef" );
+
+done_testing;
+
+__END__
 
 sub fail_or_diag {
     my $msg = shift;
@@ -64,9 +158,6 @@ sub run_tests {
         schema->deploy;
         set session => 'DBIC';
         set session_options => { schema => schema };
-    }
-    elsif ( $engine eq 'JSON' ) {
-        set session => 'JSON';
     }
     elsif ( $engine eq 'MongoDB' ) {
         my $conn;
@@ -106,7 +197,7 @@ sub run_tests {
 
     $history = $resp->content;
     cmp_ok( @{ $history->default }, '==', 1, "1 page type default" );
-    cmp_ok( $history->latest_page->uri, "eq", "/one", "latest_page OK" );
+    cmp_ok( $history->current_page->uri, "eq", "/one", "current_page OK" );
     ok( !defined $history->previous_page, "previous_page undef" );
 
     var page_history => undef;
@@ -115,7 +206,7 @@ sub run_tests {
 
     $history = $resp->content;
     cmp_ok( @{ $history->default }, '==', 2, "2 pages type default" );
-    cmp_ok( $history->latest_page->uri, "eq", "/two", "latest_page OK" );
+    cmp_ok( $history->current_page->uri, "eq", "/two", "current_page OK" );
     cmp_ok( $history->previous_page->uri, "eq", "/one", "previous_page OK" );
 
     var page_history => undef;
@@ -124,8 +215,8 @@ sub run_tests {
 
     $history = $resp->content;
     cmp_ok( @{ $history->default }, '==', 3, "3 pages type default" );
-    cmp_ok( $history->latest_page->uri,
-        "eq", "/three?q=we", "latest_page OK" );
+    cmp_ok( $history->current_page->uri,
+        "eq", "/three?q=we", "current_page OK" );
     cmp_ok( $history->previous_page->uri, "eq", "/two", "previous_page OK" );
 
     if ( $engine eq 'Cookie' ) {
@@ -140,7 +231,7 @@ sub run_tests {
 
     $history = $resp->content;
     cmp_ok( @{ $history->default }, '==', 1, "1 page type default" );
-    cmp_ok( $history->latest_page->uri, "eq", "/one", "latest_page OK" );
+    cmp_ok( $history->current_page->uri, "eq", "/one", "current_page OK" );
     ok( !defined $history->previous_page, "previous_page undef" );
 
 }

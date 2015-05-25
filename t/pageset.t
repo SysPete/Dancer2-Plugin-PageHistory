@@ -15,11 +15,11 @@ lives_ok( sub { $pages = Dancer::Plugin::PageHistory::PageSet->new },
 isa_ok( $pages, "Dancer::Plugin::PageHistory::PageSet", "pages class" )
   or diag explain $pages;
 
-can_ok( $pages, qw(max_items pages current_page previous_page methods add) );
+can_ok( $pages, qw(max_items pages latest_page previous_page methods add) );
 
-lives_ok( sub { $page = $pages->current_page }, "get current_page" );
+lives_ok( sub { $page = $pages->latest_page }, "get latest_page" );
 
-ok( !defined $page, "current_page is undef" );
+ok( !defined $page, "latest_page is undef" );
 
 lives_ok( sub { $page = $pages->previous_page }, "get previous_page" );
 
@@ -33,9 +33,9 @@ lives_ok(
     "PageSet->new with fallback_page undef"
 );
 
-lives_ok( sub { $page = $pages->current_page }, "get current_page" );
+lives_ok( sub { $page = $pages->latest_page }, "get latest_page" );
 
-ok( !defined $page, "current_page is undef" );
+ok( !defined $page, "latest_page is undef" );
 
 lives_ok( sub { $page = $pages->previous_page }, "get previous_page" );
 
@@ -50,9 +50,9 @@ lives_ok(
     "PageSet->new with fallback_page { path => '/foo' }"
 );
 
-lives_ok( sub { $page = $pages->current_page }, "get current_page" );
+lives_ok( sub { $page = $pages->latest_page }, "get latest_page" );
 
-cmp_ok( $page->path, "eq", "/foo", "current_page is expected fallback page" );
+cmp_ok( $page->path, "eq", "/foo", "latest_page is expected fallback page" );
 
 lives_ok( sub { $page = $pages->previous_page }, "get previous_page" );
 
@@ -70,9 +70,9 @@ lives_ok(
     "PageSet->new with fallback_page as Page object"
 );
 
-lives_ok( sub { $page = $pages->current_page }, "get current_page" );
+lives_ok( sub { $page = $pages->latest_page }, "get latest_page" );
 
-cmp_ok( $page->path, "eq", "/bar", "current_page is expected fallback page" );
+cmp_ok( $page->path, "eq", "/bar", "latest_page is expected fallback page" );
 
 lives_ok( sub { $page = $pages->previous_page }, "get previous_page" );
 
@@ -144,18 +144,18 @@ cmp_ok( @{$pages->bananas}, '==', 1, "one page of bananas via method" );
 
 cmp_ok( $pages->bananas->[0]->path, "eq", "/another/banana", "path is good" );
 
-cmp_ok( $pages->current_page('bananas')->path,
-    "eq", "/another/banana", "bananas current_page path" );
+cmp_ok( $pages->latest_page('bananas')->path,
+    "eq", "/another/banana", "bananas latest_page path" );
 
 ok( !defined $pages->previous_page('bananas'), "bananas previous_page undef" );
 
-cmp_ok( $pages->current_page('default')->path,
-    "eq", "/some/path", "default current_page path" );
+cmp_ok( $pages->latest_page('default')->path,
+    "eq", "/some/path", "default latest_page path" );
 
 cmp_ok( $pages->previous_page('default')->path,
     "eq", "/another/path", "default previous_page path" );
 
-cmp_ok( $pages->current_page->path, "eq", "/some/path", "current_page path" );
+cmp_ok( $pages->latest_page->path, "eq", "/some/path", "latest_page path" );
 
 cmp_ok( $pages->previous_page->path,
     "eq", "/another/path", "previous_page path" );
@@ -191,7 +191,7 @@ lives_ok( sub { $pages->add( path => "/1" ) }, "add page /1" );
 
 cmp_ok( @{$pages->default}, "==", 3, "3 pages in default" );
 
-cmp_ok( $pages->current_page->path, "eq", "/1", "check current_page" );
+cmp_ok( $pages->latest_page->path, "eq", "/1", "check latest_page" );
 
 cmp_ok( $pages->previous_page->path, "eq", "/2", "check previous_page" );
 
