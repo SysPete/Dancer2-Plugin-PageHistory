@@ -11,5 +11,5 @@ perl:
   - "5.10"
   - "5.8"
 install:
-  - cpanm --quite --notest Dancer::Session::Cookie Dancer::Plugin::DBIC Dancer::Session::DBIC DBD::SQLite Dancer::Session::JSON Dancer::Session::Storable
+  - cpanm --quite --notest Test::CheckManifest Dancer::Session::Cookie Dancer::Plugin::DBIC Dancer::Session::DBIC DBD::SQLite Dancer::Session::JSON Dancer::Session::Storable
   - cpanm --quiet --installdeps --notest .
