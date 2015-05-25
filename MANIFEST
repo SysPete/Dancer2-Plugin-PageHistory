@@ -1,4 +1,4 @@
-CHANGES
+Changes
 lib/Dancer/Plugin/PageHistory.pm
 lib/Dancer/Plugin/PageHistory/Page.pm
 lib/Dancer/Plugin/PageHistory/PageSet.pm
