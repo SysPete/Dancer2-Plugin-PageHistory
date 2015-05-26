@@ -69,8 +69,6 @@ L<Simple|Dancer::Session::Simple>,
 L<Storable|Dancer::Session::Storable>,
 L<YAML|Dancer::Session::YAML>
 
-=back
-
 =head1 CONFIGURATION
 
 No configuration is necessarily required.
