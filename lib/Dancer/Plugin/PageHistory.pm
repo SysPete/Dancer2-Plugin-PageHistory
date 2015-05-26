@@ -6,11 +6,11 @@ Dancer::Plugin::PageHistory - store recent page history for user into session
 
 =head1 VERSION
 
-Version 0.002
+Version 0.003
 
 =cut
 
-our $VERSION = '0.002';
+our $VERSION = '0.003';
 
 use Dancer ':syntax';
 use Dancer::Plugin;

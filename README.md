@@ -4,23 +4,58 @@ Dancer::Plugin::PageHistory - store recent page history for user into session
 
 # VERSION
 
-Version 0.002
+Version 0.003
+
+# SYNOPSIS
+
+```perl
+get '/product/:sku/:name' => sub {
+    add_to_history(
+        type       => 'product',
+        title      => param('name'),
+        attributes => { sku => param('sku') }
+    );
+};
+
+hook 'before_template_render' => sub {
+    my $tokens = shift;
+    $tokens->{previous_page} = history->previous_page->uri;
+};
+```
 
 # DESCRIPTION
 
 The `add_to_history` keyword which is exported by this plugin allows you to 
-add interesting items to the history lists. We also export the `history`
-keyword which returns the current [Dancer::Plugin::PageHistory::PageSet](https://metacpan.org/pod/Dancer::Plugin::PageHistory::PageSet)
-object.
+add interesting items to the history lists which are returned using the
+`history` keyword.
+
+# KEYWORDS
+
+## add\_to\_history
+
+Adds a page via ["add" in Dancer::Plugin::PageHistory::PageSet](https://metacpan.org/pod/Dancer::Plugin::PageHistory::PageSet#add). Both of
+[path](https://metacpan.org/pod/Dancer::Plugin::PageHistory::Page#path) and
+[query](https://metacpan.org/pod/Dancer::Plugin::PageHistory::Page#query) are optional arguments
+which will be set automatically from the current request if they are not
+supplied.
+
+## history
+
+Returns the current [Dancer::Plugin::PageHistory::PageSet](https://metacpan.org/pod/Dancer::Plugin::PageHistory::PageSet) object from the
+user's session.
 
 # SUPPORTED SESSION ENGINES
 
-- [Cookie](https://metacpan.org/pod/Dancer::Session::Cookie)
-- [DBIC](https://metacpan.org/pod/Dancer::Session::DBIC)
-- [JSON](https://metacpan.org/pod/Dancer::Session::JSON)
-- [Simple](https://metacpan.org/pod/Dancer::Session::Simple)
-- [Storable](https://metacpan.org/pod/Dancer::Session::Storable)
-- [YAML](https://metacpan.org/pod/Dancer::Session::YAML)
+[CHI](https://metacpan.org/pod/Dancer::Session::CHI),
+[Cookie](https://metacpan.org/pod/Dancer::Session::Cookie), 
+[DBIC](https://metacpan.org/pod/Dancer::Session::DBIC),
+[JSON](https://metacpan.org/pod/Dancer::Session::JSON),
+[Memcached](https://metacpan.org/pod/Dancer::Session::Memcached),
+[Memcached::Fast](https://metacpan.org/pod/Dancer::Session::Memcached::Fast),
+[MongoDB](https://metacpan.org/pod/Dancer::Session::MongoDB),
+[Simple](https://metacpan.org/pod/Dancer::Session::Simple),
+[Storable](https://metacpan.org/pod/Dancer::Session::Storable),
+[YAML](https://metacpan.org/pod/Dancer::Session::YAML)
 
 # CONFIGURATION
 
@@ -102,7 +137,7 @@ issue tracker:
 [https://github.com/SysPete/Dancer-Plugin-PageHistory/issues](https://github.com/SysPete/Dancer-Plugin-PageHistory/issues)
 
 I will be notified, and then you'll automatically be notified of
-progress on your bug as I make changes.
+progress on your bug as I make changes. PRs are always welcome.
 
 # SUPPORT
 

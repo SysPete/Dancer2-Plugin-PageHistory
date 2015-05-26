@@ -3,26 +3,40 @@ NAME
     session
 
 VERSION
-    Version 0.002
+    Version 0.003
+
+SYNOPSIS
+        get '/product/:sku/:name' => sub {
+            add_to_history(
+                type       => 'product',
+                title      => param('name'),
+                attributes => { sku => param('sku') }
+            );
+        };
+
+        hook 'before_template_render' => sub {
+            my $tokens = shift;
+            $tokens->{previous_page} = history->previous_page->uri;
+        };
 
 DESCRIPTION
     The "add_to_history" keyword which is exported by this plugin allows you
-    to add interesting items to the history lists. We also export the
-    "history" keyword which returns the current
-    Dancer::Plugin::PageHistory::PageSet object.
+    to add interesting items to the history lists which are returned using
+    the "history" keyword.
+
+KEYWORDS
+  add_to_history
+    Adds a page via "add" in Dancer::Plugin::PageHistory::PageSet. Both of
+    path and query are optional arguments which will be set automatically
+    from the current request if they are not supplied.
+
+  history
+    Returns the current Dancer::Plugin::PageHistory::PageSet object from the
+    user's session.
 
 SUPPORTED SESSION ENGINES
-    *   Cookie
-
-    *   DBIC
-
-    *   JSON
-
-    *   Simple
-
-    *   Storable
-
-    *   YAML
+    CHI, Cookie, DBIC, JSON, Memcached, Memcached::Fast, MongoDB, Simple,
+    Storable, YAML
 
 CONFIGURATION
     No configuration is necessarily required.
@@ -97,7 +111,7 @@ BUGS
     <https://github.com/SysPete/Dancer-Plugin-PageHistory/issues>
 
     I will be notified, and then you'll automatically be notified of
-    progress on your bug as I make changes.
+    progress on your bug as I make changes. PRs are always welcome.
 
 SUPPORT
     You can find documentation for this module with the perldoc command.
