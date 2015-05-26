@@ -114,6 +114,10 @@ sub run_tests {
         set session => 'Storable';
     }
     elsif ( $engine eq 'YAML' ) {
+        unless ( try_load_class('YAML') ) {
+            &fail_or_diag("YAML needed for this test");
+            return;
+        }
         set session => 'YAML';
     }
 
