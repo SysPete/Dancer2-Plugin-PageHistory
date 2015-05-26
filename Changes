@@ -1,5 +1,20 @@
 Revision history for Dancer::Plugin::PageHistory
 
+0.003
+
+    [ENHANCEMENTS]
+
+    * Additional sessions engines: CHI, Memcached, Memcached::Fast, MongoDB
+
+    [MISC]
+
+    * Simplify deflation by using Data::Structure::Util::unbless to simplify
+      support for additional session engines
+
+    [TESTS]
+
+    * Cleanup use of try_load_class in plugin.t
+
 0.002 Tue May 26 10:29:09 CEST 2015
 
     * cleanup tests that caused smoker failures

@@ -16,25 +16,63 @@ use Dancer ':syntax';
 use Dancer::Plugin;
 use Dancer::Plugin::PageHistory::PageSet;
 use Dancer::Plugin::PageHistory::Page;
+use Data::Structure::Util qw/unbless/;
 
 my $history_name = 'page_history';
+
+=head1 SYNOPSIS
+
+    get '/product/:sku/:name' => sub {
+        add_to_history(
+            type       => 'product',
+            title      => param('name'),
+            attributes => { sku => param('sku') }
+        );
+    };
+
+    hook 'before_template_render' => sub {
+        my $tokens = shift;
+        $tokens->{previous_page} = history->previous_page->uri;
+    };
 
 =head1 DESCRIPTION
 
 The C<add_to_history> keyword which is exported by this plugin allows you to 
-add interesting items to the history lists. We also export the C<history>
-keyword which returns the current L<Dancer::Plugin::PageHistory::PageSet>
-object.
+add interesting items to the history lists which are returned using the
+C<history> keyword.
+
+=head1 KEYWORDS
+
+=head2 add_to_history
+
+Adds a page via L<Dancer::Plugin::PageHistory::PageSet/add>. Both of
+L<path|Dancer::Plugin::PageHistory::Page/path> and
+L<query|Dancer::Plugin::PageHistory::Page/query> are optional arguments
+which will be set automatically from the current request if they are not
+supplied.
+
+=head2 history
+
+Returns the current L<Dancer::Plugin::PageHistory::PageSet> object from the
+user's session.
 
 =head1 SUPPORTED SESSION ENGINES
 
 =over 4
+
+=item * L<CHI|Dancer::Session::CHI>
 
 =item * L<Cookie|Dancer::Session::Cookie>
 
 =item * L<DBIC|Dancer::Session::DBIC>
 
 =item * L<JSON|Dancer::Session::JSON>
+
+=item * L<Memcached|Dancer::Session::Memcached>
+
+=item * L<Memcached::Fast|Dancer::Session::Memcached::Fast>
+
+=item * L<MongoDB|Dancer::Session::MongoDB>
 
 =item * L<Simple|Dancer::Session::Simple>
 
@@ -140,9 +178,9 @@ sub add_to_history {
 
     my $history = &history();
 
-    # add the page and save back to session
+    # add the page and save back to session with pages all unblessed
     $history->add( %args );
-    session $name => $history->pages;
+    session $name => unbless( $history->pages );
 }
 
 sub history {
@@ -192,7 +230,7 @@ issue tracker:
 L<https://github.com/SysPete/Dancer-Plugin-PageHistory/issues>
 
 I will be notified, and then you'll automatically be notified of
-progress on your bug as I make changes.
+progress on your bug as I make changes. PRs are always welcome.
 
 =head1 SUPPORT
 

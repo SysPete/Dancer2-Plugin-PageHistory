@@ -24,11 +24,13 @@ set session_dir => File::Temp::newdir(
     EXLOCK  => 0,
     DIR     => File::Spec->tmpdir,
 );
+set session_name => 'dancer.session';
 
-# not yet supported: CHI KiokuDB Memcached MongoDB PSGI
+# not yet supported: KiokuDB PSGI Redis
 my @session_engines = (
     qw/
-      Cookie DBIC JSON Simple Storable YAML
+      CHI Cookie DBIC JSON Memcached Memcached::Fast MongoDB Simple
+      Storable YAML
       /
 );
 
@@ -48,21 +50,17 @@ sub run_tests {
 
     my ( $history, $resp );
 
-    if ( $engine eq 'Cookie' ) {
-        unless ( try_load_class('Dancer::Session::Cookie') ) {
-            &fail_or_diag("Dancer::Session::Cookie needed for this test");
-            return;
-        }
+    if ( $engine eq 'CHI' ) {
+        set session_CHI => { driver => 'Memory', global => 1 };
+        set session => 'CHI';
+    }
+    elsif ( $engine eq 'Cookie' ) {
         set session_cookie_key => 'notagood secret';
         set session            => 'cookie';
     }
     elsif ( $engine eq 'DBIC' ) {
         unless ( try_load_class('Dancer::Plugin::DBIC') ) {
             &fail_or_diag("Dancer::Plugin::DBIC needed for this test");
-            return;
-        }
-        unless ( try_load_class('Dancer::Session::DBIC') ) {
-            &fail_or_diag("Dancer::Session::DBIC needed for this test");
             return;
         }
         unless ( try_load_class('DBD::SQLite') ) {
@@ -77,17 +75,21 @@ sub run_tests {
         &fail_or_diag("testing DBIC failed: $@") if $@;
     }
     elsif ( $engine eq 'JSON' ) {
-        unless ( try_load_class('Dancer::Session::JSON') ) {
-            &fail_or_diag("Dancer::Session::JSON needed for this test");
-            return;
-        }
         set session => 'JSON';
     }
+    elsif ( $engine eq 'KiokuDB' ) {
+        set session => 'KiokuDB';
+    }
+    elsif ( $engine eq 'Memcached' ) {
+        set memcached_servers => "127.0.0.1:11211";
+        set session           => 'Memcached';
+    }
+    elsif ( $engine eq 'Memcached::Fast' ) {
+        set session_memcached_fast_servers   => "127.0.0.1:11211";
+        set session_memcached_fast_namespace => "page_history_testing";
+        set session                          => 'Memcached::Fast';
+    }
     elsif ( $engine eq 'MongoDB' ) {
-        unless ( try_load_class('Dancer::Session::MongoDB') ) {
-            &fail_or_diag("Dancer::Session::MongoDB needed for this test");
-            return;
-        }
         my $conn;
         eval { $conn = MongoDB::Connection->new; };
         if ($@) {
@@ -101,21 +103,17 @@ sub run_tests {
         lives_ok( sub { $engine = Dancer::Session::MongoDB->create },
             "create mongodb" );
     }
+    elsif ( $engine eq 'Redis' ) {
+        set redis_session => { server => "127.0.0.1:6379", };
+        set session => 'Redis';
+    }
     elsif ( $engine eq 'Simple' ) {
         set session => 'Simple';
     }
     elsif ( $engine eq 'Storable' ) {
-        unless ( try_load_class('Dancer::Session::Storable') ) {
-            &fail_or_diag("Dancer::Session::Storable needed for this test");
-            return;
-        }
         set session => 'Storable';
     }
     elsif ( $engine eq 'YAML' ) {
-        unless ( try_load_class('YAML') ) {
-            &fail_or_diag("YAML needed for this test");
-            return;
-        }
         set session => 'YAML';
     }
 
@@ -173,16 +171,17 @@ sub run_tests {
 foreach my $engine (@session_engines) {
 
     my $session_class = "Dancer::Session::$engine";
-    unless ( try_load_class($session_class) ) {
+    if ( try_load_class($session_class) ) {
+        run_tests($engine);
+    }
+    else {
         if ($release) {
             fail "$session_class missing";
         }
         else {
             diag "$session_class missing so not testing this session engine";
         }
-        next;
     }
-    run_tests($engine);
 }
 
 done_testing;
