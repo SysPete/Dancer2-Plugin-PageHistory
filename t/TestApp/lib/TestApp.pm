@@ -1,20 +1,13 @@
 package TestApp;
 use Dancer ':syntax';
 use Dancer::Plugin::PageHistory;
-use File::Temp;
 
 our $VERSION = '0.1';
-
-my $fh = File::Temp->new(
-    TEMPLATE => 'page_history_XXXXX',
-    EXLOCK   => 0,
-    TMPDIR   => 1,
-);
 
 set plugins => {
     DBIC => {
         default => {
-            dsn          => "dbi:SQLite:dbname=$fh",
+            dsn          => "dbi:SQLite:dbname=:memory:",
             schema_class => "TestApp::Schema",
         }
     },
@@ -31,7 +24,7 @@ get '/' => sub {
     template 'index';
 };
 
-get '/manual/**' => sub { 
+get '/manual/**' => sub {
     add_to_history;
     my $history = history;
     return $history;
@@ -41,7 +34,5 @@ get '/**' => sub {
     my $history = history;
     return $history;
 };
-
-
 
 true;

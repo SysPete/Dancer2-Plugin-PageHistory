@@ -2,10 +2,11 @@ use strict;
 use warnings;
 use Test::More import => ['!pass'];
 use Test::Exception;
-use Class::Load qw(try_load_class);
+use Class::Load qw(load_class try_load_class);
 use File::Spec;
 use File::Temp;
 use Dancer qw(:tests);
+use Dancer::Test;
 
 use lib File::Spec->catdir( 't', 'TestApp', 'lib' );
 use TestApp;
@@ -33,7 +34,7 @@ my @session_engines = (
 
 sub fail_or_diag {
     my $msg = shift;
-    if ( $release ) {
+    if ($release) {
         fail $msg;
     }
     else {
@@ -68,11 +69,12 @@ sub run_tests {
             &fail_or_diag("DBD::SQLite needed for this test");
             return;
         }
-        use Dancer::Plugin::DBIC;
-        use TestApp::Schema;
-        schema->deploy;
+        load_class('TestApp::Schema');
+        my $schema = Dancer::Plugin::DBIC::schema();
+        $schema->deploy;
         set session => 'DBIC';
-        set session_options => { schema => schema };
+        set session_options => { schema => $schema };
+        &fail_or_diag("testing DBIC failed: $@") if $@;
     }
     elsif ( $engine eq 'JSON' ) {
         unless ( try_load_class('Dancer::Session::JSON') ) {
@@ -92,9 +94,9 @@ sub run_tests {
             &fail_or_diag("MongoDB needs to be running for this test.");
             return;
         }
-        set mongodb_session_db => 'test_dancer_plugin_pagehistory';
+        set mongodb_session_db     => 'test_dancer_plugin_pagehistory';
         set mongodb_auto_reconnect => 0;
-        set session => 'MongoDB';
+        set session                => 'MongoDB';
         my $engine;
         lives_ok( sub { $engine = Dancer::Session::MongoDB->create },
             "create mongodb" );
@@ -110,10 +112,12 @@ sub run_tests {
         set session => 'Storable';
     }
     elsif ( $engine eq 'YAML' ) {
+        unless ( try_load_class('YAML') ) {
+            &fail_or_diag("YAML needed for this test");
+            return;
+        }
         set session => 'YAML';
     }
-
-    use Dancer::Test;
 
     # var page_history is available here due to the nastiness of Dancer::Test
     # so to make sure the code is behaving we need to undef it before we
@@ -126,7 +130,7 @@ sub run_tests {
     isa_ok( session, "Dancer::Session::$engine" );
 
     $history = $resp->content;
-    cmp_ok( @{ $history->default }, '==', 1, "1 page type default" );
+    cmp_ok( @{ $history->default },     '==', 1,      "1 page type default" );
     cmp_ok( $history->latest_page->uri, "eq", "/one", "latest_page OK" );
     ok( !defined $history->previous_page, "previous_page undef" );
 
@@ -135,7 +139,7 @@ sub run_tests {
     response_status_is $resp => 200, 'GET /two status is ok';
 
     $history = $resp->content;
-    cmp_ok( @{ $history->default }, '==', 2, "2 pages type default" );
+    cmp_ok( @{ $history->default },     '==', 2,      "2 pages type default" );
     cmp_ok( $history->latest_page->uri, "eq", "/two", "latest_page OK" );
     cmp_ok( $history->previous_page->uri, "eq", "/one", "previous_page OK" );
 
@@ -145,11 +149,11 @@ sub run_tests {
 
     $history = $resp->content;
     cmp_ok( @{ $history->default }, '==', 3, "3 pages type default" );
-    cmp_ok( $history->latest_page->uri,
-        "eq", "/three?q=we", "latest_page OK" );
+    cmp_ok( $history->latest_page->uri, "eq", "/three?q=we", "latest_page OK" );
     cmp_ok( $history->previous_page->uri, "eq", "/two", "previous_page OK" );
 
     if ( $engine eq 'Cookie' ) {
+
         # ugly hack
         set session_cookie_key => 'anewsecret';
     }
@@ -160,7 +164,7 @@ sub run_tests {
     response_status_is $resp => 200, 'GET /one status is ok';
 
     $history = $resp->content;
-    cmp_ok( @{ $history->default }, '==', 1, "1 page type default" );
+    cmp_ok( @{ $history->default },     '==', 1,      "1 page type default" );
     cmp_ok( $history->latest_page->uri, "eq", "/one", "latest_page OK" );
     ok( !defined $history->previous_page, "previous_page undef" );
 
@@ -170,7 +174,7 @@ foreach my $engine (@session_engines) {
 
     my $session_class = "Dancer::Session::$engine";
     unless ( try_load_class($session_class) ) {
-        if ( $release ) {
+        if ($release) {
             fail "$session_class missing";
         }
         else {

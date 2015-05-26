@@ -1,5 +1,9 @@
 Revision history for Dancer::Plugin::PageHistory
 
+0.002 Tue May 26 10:29:09 CEST 2015
+
+    * cleanup tests that caused smoker failures
+
 0.001 Mon May 25 19:39:00 CEST 2015
 
     * Initial release

@@ -1,5 +1,4 @@
 sudo: false
-env: RELEASE_TESTING=1
 language: perl
 perl:
   - "5.21"
@@ -11,5 +10,4 @@ perl:
   - "5.10"
   - "5.8"
 install:
-  - cpanm --quite --notest Test::CheckManifest Dancer::Session::Cookie Dancer::Plugin::DBIC Dancer::Session::DBIC DBD::SQLite Dancer::Session::JSON Dancer::Session::Storable
   - cpanm --quiet --installdeps --notest .

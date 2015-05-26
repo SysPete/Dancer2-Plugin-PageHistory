@@ -3,7 +3,7 @@ NAME
     session
 
 VERSION
-    Version 0.001
+    Version 0.002
 
 DESCRIPTION
     The "add_to_history" keyword which is exported by this plugin allows you
