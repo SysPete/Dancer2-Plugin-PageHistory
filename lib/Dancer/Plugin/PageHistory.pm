@@ -58,27 +58,16 @@ user's session.
 
 =head1 SUPPORTED SESSION ENGINES
 
-=over 4
-
-=item * L<CHI|Dancer::Session::CHI>
-
-=item * L<Cookie|Dancer::Session::Cookie>
-
-=item * L<DBIC|Dancer::Session::DBIC>
-
-=item * L<JSON|Dancer::Session::JSON>
-
-=item * L<Memcached|Dancer::Session::Memcached>
-
-=item * L<Memcached::Fast|Dancer::Session::Memcached::Fast>
-
-=item * L<MongoDB|Dancer::Session::MongoDB>
-
-=item * L<Simple|Dancer::Session::Simple>
-
-=item * L<Storable|Dancer::Session::Storable>
-
-=item * L<YAML|Dancer::Session::YAML>
+L<CHI|Dancer::Session::CHI>,
+L<Cookie|Dancer::Session::Cookie>, 
+L<DBIC|Dancer::Session::DBIC>,
+L<JSON|Dancer::Session::JSON>,
+L<Memcached|Dancer::Session::Memcached>,
+L<Memcached::Fast|Dancer::Session::Memcached::Fast>,
+L<MongoDB|Dancer::Session::MongoDB>,
+L<Simple|Dancer::Session::Simple>,
+L<Storable|Dancer::Session::Storable>,
+L<YAML|Dancer::Session::YAML>
 
 =back
 
