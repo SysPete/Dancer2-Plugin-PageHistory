@@ -3,7 +3,7 @@ NAME
     session
 
 VERSION
-    Version 0.003
+    Version 0.004
 
 SYNOPSIS
         get '/product/:sku/:name' => sub {
@@ -35,8 +35,13 @@ KEYWORDS
     user's session.
 
 SUPPORTED SESSION ENGINES
-    CHI, Cookie, DBIC, JSON, Memcached, Memcached::Fast, MongoDB, Simple,
-    Storable, YAML
+    CHI, Cookie, DBIC, JSON, Memcached, Memcached::Fast, MongoDB, PSGI,
+    Simple, Storable, YAML
+
+CAVEATS
+    Dancer::Session::Cookie and Dancer::Session::PSGI either don't handle
+    destroy at all or else do it wrong so I suggest you avoid those modules
+    if you want things like logout to work.
 
 CONFIGURATION
     No configuration is necessarily required.
@@ -98,6 +103,9 @@ TODO
     *   Add support for more session engines
 
     *   Create Dancer2 plugin
+
+    *   investigate "destroy" problems with Dancer::Session::Cookie and
+        Dancer::Session::PSGI
 
 AUTHOR
     Peter Mottram (SysPete), "peter@sysnix.com"

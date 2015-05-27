@@ -1,5 +1,16 @@
 Revision history for Dancer::Plugin::PageHistory
 
+0.004 Wed May 27 18:26:16 CEST 2015
+
+    [ENHANCEMENTS]
+
+    * Additional sessions engine: PSGI
+
+    [TESTS]
+
+    * switch from Dancer::Test to Plack::Test for plugin.t
+
+
 0.003 Tue May 26 16:44:39 CEST 2015
 
     [ENHANCEMENTS]

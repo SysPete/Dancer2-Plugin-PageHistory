@@ -4,7 +4,7 @@ Dancer::Plugin::PageHistory - store recent page history for user into session
 
 # VERSION
 
-Version 0.003
+Version 0.004
 
 # SYNOPSIS
 
@@ -53,9 +53,16 @@ user's session.
 [Memcached](https://metacpan.org/pod/Dancer::Session::Memcached),
 [Memcached::Fast](https://metacpan.org/pod/Dancer::Session::Memcached::Fast),
 [MongoDB](https://metacpan.org/pod/Dancer::Session::MongoDB),
+[PSGI](https://metacpan.org/pod/Dancer::Session::PSGI),
 [Simple](https://metacpan.org/pod/Dancer::Session::Simple),
 [Storable](https://metacpan.org/pod/Dancer::Session::Storable),
 [YAML](https://metacpan.org/pod/Dancer::Session::YAML)
+
+# CAVEATS
+
+[Dancer::Session::Cookie](https://metacpan.org/pod/Dancer::Session::Cookie) and [Dancer::Session::PSGI](https://metacpan.org/pod/Dancer::Session::PSGI) either don't handle
+destroy at all or else do it wrong so I suggest you avoid those modules if
+you want things like logout to work.
 
 # CONFIGURATION
 
@@ -122,6 +129,8 @@ Puts history into the token `page_history`.
 - Add more tests
 - Add support for more session engines
 - Create Dancer2 plugin
+- investigate `destroy` problems with [Dancer::Session::Cookie](https://metacpan.org/pod/Dancer::Session::Cookie)
+and [Dancer::Session::PSGI](https://metacpan.org/pod/Dancer::Session::PSGI)
 
 # AUTHOR
 
