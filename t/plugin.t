@@ -8,7 +8,7 @@ use File::Spec;
 use File::Temp;
 use HTTP::Cookies;
 use HTTP::Request::Common;
-use JSON;
+use JSON qw//;
 use Plack::Builder;
 use Plack::Test;
 use lib File::Spec->catdir( 't', 'TestApp', 'lib' );
@@ -43,7 +43,7 @@ sub get_history {
     ok( $res->is_success, "get $uri OK" );
     $jar->extract_cookies($res);
     return Dancer::Plugin::PageHistory::PageSet->new(
-        pages => from_json( $res->content ) );
+        pages => JSON::from_json( $res->content ) );
 }
 
 sub run_tests {
