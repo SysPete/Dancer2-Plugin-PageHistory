@@ -8,6 +8,7 @@ use File::Spec;
 use File::Temp;
 use HTTP::Cookies;
 use HTTP::Request::Common;
+use JSON;
 use Plack::Builder;
 use Plack::Test;
 use lib File::Spec->catdir( 't', 'TestApp', 'lib' );

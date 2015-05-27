@@ -20,6 +20,7 @@ WriteMakefile(
         'File::Temp'            => 0,
         'HTTP::Cookies'         => 0,
         'HTTP::Request::Common' => 0,
+        'JSON'                  => 0,
         'Plack::Builder'        => 0,
         'Plack::Test'           => 0,
         'Test::Exception'       => 0,
