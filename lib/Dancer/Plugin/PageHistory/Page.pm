@@ -11,11 +11,11 @@ use Types::Standard qw(Str HashRef);
 use URI;
 use namespace::clean;
 
-=head1 ATTRBIUTES
+=head1 ATTRIBUTES
 
 =head2 attributes
 
-Extra attributes as a hash refence, e.g.: SKU for a product page.
+Extra attributes as a hash reference, e.g.: SKU for a product page.
 
 =cut
 

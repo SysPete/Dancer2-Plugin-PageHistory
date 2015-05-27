@@ -11,11 +11,8 @@ t/manifest.t
 t/page.t
 t/pageset.t
 t/plugin.t
-t/pod-coverage.t
 t/pod.t
-t/TestApp/config.yml
-t/TestApp/environments/PSGI.yml
-t/TestApp/views/index
+t/pod-coverage.t
+t/pod-spelling.t
 t/TestApp/lib/TestApp/Schema/Result/Session.pm
 t/TestApp/lib/TestApp/Schema.pm
-t/TestApp/lib/TestApp.pm

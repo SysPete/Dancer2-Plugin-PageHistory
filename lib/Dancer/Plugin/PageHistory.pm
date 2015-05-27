@@ -65,9 +65,16 @@ L<JSON|Dancer::Session::JSON>,
 L<Memcached|Dancer::Session::Memcached>,
 L<Memcached::Fast|Dancer::Session::Memcached::Fast>,
 L<MongoDB|Dancer::Session::MongoDB>,
+L<PSGI|Dancer::Session::PSGI>,
 L<Simple|Dancer::Session::Simple>,
 L<Storable|Dancer::Session::Storable>,
 L<YAML|Dancer::Session::YAML>
+
+=head1 CAVEATS
+
+L<Dancer::Session::Cookie> and L<Dancer::Session::PSGI> either don't handle
+destroy at all or else do it wrong so I suggest you avoid those modules if
+you want things like logout to work.
 
 =head1 CONFIGURATION
 
@@ -200,6 +207,9 @@ register_plugin;
 =item * Add support for more session engines
 
 =item * Create Dancer2 plugin
+
+=item * investigate C<destroy> problems with L<Dancer::Session::Cookie>
+and L<Dancer::Session::PSGI>
 
 =back
 
