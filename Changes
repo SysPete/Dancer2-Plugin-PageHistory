@@ -1,5 +1,9 @@
 Revision history for Dancer::Plugin::PageHistory
 
+0.005 
+
+    * bugfix: page objects not unblessed when other code saves to session
+    
 0.004 Wed May 27 18:26:16 CEST 2015
 
     [ENHANCEMENTS]

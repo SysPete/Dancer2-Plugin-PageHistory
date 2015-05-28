@@ -3,7 +3,7 @@ NAME
     session
 
 VERSION
-    Version 0.004
+    Version 0.005
 
 SYNOPSIS
         get '/product/:sku/:name' => sub {

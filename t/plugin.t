@@ -48,7 +48,7 @@ sub get_history {
 
 sub run_tests {
     my $engine = shift;
-    note "Testing with $engine";
+    diag "Testing with $engine";
 
     my ( %settings, $history, $req, $res );
 
