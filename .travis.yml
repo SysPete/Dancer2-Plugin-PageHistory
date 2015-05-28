@@ -10,5 +10,5 @@ perl:
   - "5.10"
   - "5.8"
 install:
-  - cpanm --quiet --notest DBIx::Class Dancer::Session::DBIC
+  - cpanm --quiet --notest DBIx::Class Dancer::Session::DBIC SQL::Translator
   - cpanm --quiet --installdeps --notest .
