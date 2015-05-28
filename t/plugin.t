@@ -64,8 +64,8 @@ sub run_tests {
     # engine-specific checks and setup
 
     if ( $engine eq 'DBIC' ) {
-        unless ( try_load_class('Dancer::Plugin::DBIC') ) {
-            &fail_or_diag("Dancer::Plugin::DBIC needed for this test");
+        unless ( try_load_class('DBIx::Class') ) {
+            &fail_or_diag("DBIx::Class needed for this test");
             return;
         }
         unless ( try_load_class('DBD::SQLite') ) {
@@ -73,7 +73,7 @@ sub run_tests {
             return;
         }
         load_class('TestApp::Schema');
-        my $schema = Dancer::Plugin::DBIC::schema();
+        my $schema = TestApp::Schema->connect("dbi:SQLite:dbname=:memory:");
         $schema->deploy;
         $settings{session_options} = { schema => $schema };
     }
@@ -108,12 +108,6 @@ sub run_tests {
         use Dancer::Plugin::PageHistory;
 
         set plugins => {
-            DBIC => {
-                default => {
-                    dsn          => "dbi:SQLite:dbname=:memory:",
-                    schema_class => "TestApp::Schema",
-                }
-            },
             PageHistory => {
                 add_all_pages => 1,
                 ignore_ajax   => 1,
