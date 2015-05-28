@@ -86,15 +86,16 @@ has pages => (
 );
 
 sub _coerce_pages {
-    foreach my $pages ( values %{ $_[0] } ) {
-      PAGE: foreach my $page (@$pages) {
-            if ( !blessed($page) && ref($page) eq 'HASH' )
-            {
-                $page = Dancer::Plugin::PageHistory::Page->new( %$page );
+    my %pages;
+    while ( my ( $type, $list ) = each %{ $_[0] } ) {
+        foreach my $page (@$list) {
+            if ( !blessed($page) && ref($page) eq 'HASH' ) {
+                push @{ $pages{$type} },
+                  Dancer::Plugin::PageHistory::Page->new(%$page);
             }
         }
     }
-    return $_[0];
+    return \%pages;
 }
 
 =head2 methods
