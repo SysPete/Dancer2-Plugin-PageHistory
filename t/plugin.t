@@ -77,6 +77,22 @@ sub run_tests {
         $schema->deploy;
         $settings{session_options} = { schema => $schema };
     }
+    elsif ( $engine =~ /^Memcached/ ) {
+        my $cache_class = "Cache::$engine";
+        unless ( try_load_class($cache_class) ) {
+            &fail_or_diag("$cache_class needed for this test");
+            return;
+        }
+        my $memd = $cache_class->new( { servers => ["127.0.0.1:11211"] } );
+        my $ret = $memd->set( "_pagehistory_test.$$" => 1 );
+        if ($ret) {
+            $memd->delete("_pagehistory_test.$$");
+        }
+        else {
+            &fail_or_diag("Cannot test $engine - cannot reach server");
+            return;
+        }
+    }
     elsif ( $engine eq 'MongoDB' ) {
         my $conn;
         eval { $conn = MongoDB::Connection->new; };
@@ -217,7 +233,7 @@ sub run_tests {
     cmp_ok( $history->latest_page->uri, "eq", "/one", "latest_page OK" );
     if ( $engine =~ /^(Cookie|PSGI)$/ ) {
       TODO: {
-          local $TODO = "Cookie and PSGI don't handle destroy correctly";
+            local $TODO = "Cookie and PSGI don't handle destroy correctly";
             cmp_ok( keys %{ $history->pages }, '==', 1, "1 key in pages" );
             cmp_ok( @{ $history->default },    '==', 1, "1 page type default" );
             ok( !defined $history->previous_page, "previous_page undef" );
