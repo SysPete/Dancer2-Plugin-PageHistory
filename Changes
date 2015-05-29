@@ -1,6 +1,10 @@
 Revision history for Dancer::Plugin::PageHistory
 
-0.005 
+0.006 Fri May 29 12:30:40 CEST 2015
+
+    * improve robustness of memcache and DBIC tests
+
+0.005 Thu May 28 16:25:50 CEST 2015
 
     * bugfix: page objects not unblessed when other code saves to session
     
