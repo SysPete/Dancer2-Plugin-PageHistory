@@ -76,6 +76,8 @@ L<Dancer::Session::Cookie> and L<Dancer::Session::PSGI> either don't handle
 destroy at all or else do it wrong so I suggest you avoid those modules if
 you want things like logout to work.
 
+See </TODO>.
+
 =head1 CONFIGURATION
 
 No configuration is necessarily required.
@@ -121,7 +123,8 @@ Defaults to 0. Set to 1 to have ajax requests ignored.
 This setting can be used to change the name of the key used to store
 the history object in the session from the default C<page_history> to
 something else. This is also the key used for name of the token
-containing the history object that is passed to templates.
+containing the history object that is passed to templates and also the var
+used to cache the history object during the request lifetime.
 
 =back
 
@@ -170,7 +173,7 @@ sub add_to_history {
 
     debug "adding page to history: ", \%args;
 
-    my $history = &history();
+    my $history = history();
 
     # add the page and save back to session with pages all unblessed
     $history->add( %args );
@@ -180,14 +183,22 @@ sub add_to_history {
 sub history {
     my $conf = plugin_setting;
     my $name = $conf->{history_name} || $history_name;
+    my $history;
 
-    my $session_history = session($name);
-    $session_history = {} unless ref($session_history) eq 'HASH';
+    if ( defined var($name) ) {
+        $history = var($name);
+    }
+    else {
 
-    my %args = $conf->{PageSet} ? %{ $conf->{PageSet} } : ();
-    $args{pages} = $session_history;
+        my $session_history = session($name);
+        $session_history = {} unless ref($session_history) eq 'HASH';
 
-    my $history = Dancer::Plugin::PageHistory::PageSet->new(%args);
+        my %args = $conf->{PageSet} ? %{ $conf->{PageSet} } : ();
+        $args{pages} = $session_history;
+
+        $history = Dancer::Plugin::PageHistory::PageSet->new(%args);
+        var $name => $history;
+    }
 
     return $history;
 }
