@@ -4,7 +4,7 @@ Dancer::Plugin::PageHistory - store recent page history for user into session
 
 # VERSION
 
-Version 0.006
+Version 0.100
 
 # SYNOPSIS
 
@@ -64,6 +64,8 @@ user's session.
 destroy at all or else do it wrong so I suggest you avoid those modules if
 you want things like logout to work.
 
+See </TODO>.
+
 # CONFIGURATION
 
 No configuration is necessarily required.
@@ -110,7 +112,8 @@ Configuration options for the plugin itself:
     This setting can be used to change the name of the key used to store
     the history object in the session from the default `page_history` to
     something else. This is also the key used for name of the token
-    containing the history object that is passed to templates.
+    containing the history object that is passed to templates and also the var
+    used to cache the history object during the request lifetime.
 
 # HOOKS
 

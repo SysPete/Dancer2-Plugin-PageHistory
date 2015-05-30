@@ -1,5 +1,9 @@
 Revision history for Dancer::Plugin::PageHistory
 
+0.100 Sat May 30 12:01:45 CEST 2015
+
+    * cache history in var for request duration
+
 0.006 Fri May 29 12:30:40 CEST 2015
 
     * improve robustness of memcache and DBIC tests
