@@ -1,5 +1,9 @@
 Revision history for Dancer::Plugin::PageHistory
 
+0.101 Fri Jun 12 19:57:59 CEST 2015
+
+    * update Plack build dep since older Plack::Test has no create method
+
 0.100 Sat May 30 12:01:45 CEST 2015
 
     * cache history in var for request duration
