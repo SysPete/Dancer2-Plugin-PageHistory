@@ -76,7 +76,7 @@ L<Dancer::Session::Cookie> and L<Dancer::Session::PSGI> either don't handle
 destroy at all or else do it wrong so I suggest you avoid those modules if
 you want things like logout to work.
 
-See </TODO>.
+See L</TODO>.
 
 =head1 CONFIGURATION
 
@@ -229,8 +229,6 @@ and L<Dancer::Session::PSGI>
 Peter Mottram (SysPete), "peter@sysnix.com"
 
 =head1 BUGS
-
-This is BETA software so bugs and missing features are expected.
 
 Please report any bugs or feature requests via the project's GitHub
 issue tracker:
