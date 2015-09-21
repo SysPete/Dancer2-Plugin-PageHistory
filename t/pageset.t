@@ -117,16 +117,20 @@ lives_ok(
     sub {
         $pages = Dancer::Plugin::PageHistory::PageSet->new(
             max_items => 3,
-            methods   => [ 'default', 'bananas' ],
+            methods   => [ 'default', 'bananas', 'apples' ],
             pages     => $data
         );
     },
     "PageSet->new with args"
 );
 
-can_ok( $pages, qw(default bananas) );
+can_ok( $pages, qw(default bananas apples) );
 
-is_deeply( [ sort $pages->types ], [qw/bananas default/], "check pages types" );
+is_deeply(
+    [ sort $pages->types ],
+    [qw/bananas default/],
+    "check pages types"
+) or diag explain $pages->types;
 
 my $count = 0;
 foreach my $type ( $pages->types ) {
@@ -140,6 +144,7 @@ foreach my $type ( $pages->types ) {
 }
 cmp_ok( $count, "==", 3, "found 3 pages" );
 
+cmp_ok( @{$pages->apples}, '==', 0, "zero pages of apples via method" );
 cmp_ok( @{$pages->bananas}, '==', 1, "one page of bananas via method" );
 
 cmp_ok( $pages->bananas->[0]->path, "eq", "/another/banana", "path is good" );

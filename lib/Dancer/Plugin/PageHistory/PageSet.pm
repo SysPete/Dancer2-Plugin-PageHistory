@@ -122,7 +122,7 @@ sub _trigger_methods {
     foreach my $method ( @$methods ) {
         unless ( $self->can( $method )) {
             quote_sub "Dancer::Plugin::PageHistory::PageSet::$method",
-              q{ return shift->pages->{$type}; }, { '$type' => \$method };
+              q{ return shift->pages->{$type} || []; }, { '$type' => \$method };
         }
     }
 }
