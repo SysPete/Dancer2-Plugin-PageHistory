@@ -4,7 +4,7 @@ Dancer::Plugin::PageHistory - store recent page history for user into session
 
 # VERSION
 
-Version 0.101
+Version 0.102
 
 # SYNOPSIS
 
@@ -64,7 +64,7 @@ user's session.
 destroy at all or else do it wrong so I suggest you avoid those modules if
 you want things like logout to work.
 
-See </TODO>.
+See ["TODO"](#todo).
 
 # CONFIGURATION
 
@@ -140,8 +140,6 @@ and [Dancer::Session::PSGI](https://metacpan.org/pod/Dancer::Session::PSGI)
 Peter Mottram (SysPete), "peter@sysnix.com"
 
 # BUGS
-
-This is BETA software so bugs and missing features are expected.
 
 Please report any bugs or feature requests via the project's GitHub
 issue tracker:

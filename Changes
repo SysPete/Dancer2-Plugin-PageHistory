@@ -1,5 +1,9 @@
 Revision history for Dancer::Plugin::PageHistory
 
+0.102 Mon 21 Sep 10:58:40 CEST 2015
+
+    * return empty list instead of undef for method calls with no history
+
 0.101 Fri Jun 12 19:57:59 CEST 2015
 
     * update Plack build dep since older Plack::Test has no create method
