@@ -47,7 +47,8 @@ C<history> keyword.
 
 Adds a page via L<Dancer::Plugin::PageHistory::PageSet/add>. Both of
 L<path|Dancer::Plugin::PageHistory::Page/path> and
-L<query|Dancer::Plugin::PageHistory::Page/query> are optional arguments
+L<query_string|Dancer::Plugin::PageHistory::Page/query_string> are optional
+arguments
 which will be set automatically from the current request if they are not
 supplied.
 
@@ -162,12 +163,9 @@ sub add_to_history {
     my $name = plugin_setting->{history_name} || $history_name;
     my ( $self, @args ) = plugin_args(@_);
 
-    my $path  = request->path;
-    my $query = params('query');
-
     my %args = (
-        path  => $path,
-        query => $query,
+        path         => request->path,
+        query_string => request->env->{QUERY_STRING},
         @args,
     );
 

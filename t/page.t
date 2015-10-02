@@ -21,8 +21,8 @@ throws_ok(
 throws_ok(
     sub {
         $page = Dancer::Plugin::PageHistory::Page->new(
-            path  => '/',
-            query => ''
+            path         => '/',
+            query_string => {},
         );
     },
     qr/did not pass type constraint/,
@@ -60,7 +60,8 @@ lives_ok(
 
 isa_ok( $page, "Dancer::Plugin::PageHistory::Page", "page class" );
 
-can_ok( $page, qw(attributes path query title uri has_attributes has_title ) );
+can_ok( $page,
+    qw( attributes path query_string title uri has_attributes has_title) );
 
 cmp_ok( $page->path, "eq", "/some/path", "path is OK" );
 
@@ -73,10 +74,10 @@ ok( !$page->has_title, "has_title false" );
 lives_ok(
     sub {
         $page = Dancer::Plugin::PageHistory::Page->new(
-            attributes => { foo => "bar" },
-            path       => '/some/path',
-            query => { a => 123, b => 456 },
-            title => "Some page",
+            attributes   => { foo => "bar" },
+            path         => '/some/path',
+            query_string => 'a=123&b=456',
+            title        => "Some page",
         );
     },
     "Page->new path=>/home/path"
@@ -98,6 +99,6 @@ ok( $page->has_title, "has_title true" );
 
 cmp_ok( $page->title, "eq", "Some page", "title is OK" );
 
-is_deeply( $page->query, { a => 123, b => 456 }, "query is OK" );
+cmp_ok( $page->query_string, "eq", 'a=123&b=456', "query is OK" );
 
 done_testing;

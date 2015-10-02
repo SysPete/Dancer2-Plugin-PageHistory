@@ -8,7 +8,6 @@ Dancer::Plugin::PageHistory::Page - Page object for Dancer::Plugin::PageHistory
 
 use Moo;
 use Types::Standard qw(Str HashRef);
-use URI;
 use namespace::clean;
 
 =head1 ATTRIBUTES
@@ -37,15 +36,15 @@ has path => (
     required => 1,
 );
 
-=head2 query
+=head2 query_string
 
-Query parameters as a hash reference.
+The original query string
 
 =cut
 
-has query => (
+has query_string => (
     is        => 'ro',
-    isa       => HashRef,
+    isa       => Str,
 );
 
 =head2 title
@@ -82,9 +81,9 @@ Returns the string URI for L</path> and L</query>.
 
 sub uri {
     my $self = shift;
-    my $uri = URI->new( $self->path );
-    $uri->query_form($self->query);
-    return $uri->as_string;
+    my $uri = $self->path;
+    $uri .= '?' . $self->query_string if $self->query_string;
+    return "$uri";
 }
 
 1;
