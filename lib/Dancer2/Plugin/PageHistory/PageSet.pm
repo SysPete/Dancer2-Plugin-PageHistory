@@ -1,15 +1,15 @@
-package Dancer::Plugin::PageHistory::PageSet;
+package Dancer2::Plugin::PageHistory::PageSet;
 
 =head1 NAME
 
-Dancer::Plugin::PageHistory::PageSet - collection of pages with accessors
+Dancer2::Plugin::PageHistory::PageSet - collection of pages with accessors
 
 =cut
 
-use Moo;
 use Scalar::Util qw(blessed);
 use Sub::Quote qw(quote_sub);
-use Types::Standard qw(ArrayRef HashRef InstanceOf Int Maybe Str);
+use Dancer2::Core::Types qw(ArrayRef HashRef InstanceOf Int Maybe Str);
+use Moo;
 use namespace::clean;
 
 =head1 ATTRIBUTES
@@ -22,8 +22,8 @@ will be the one used when C<type> is not specified. Defaults to C<default>.
 =cut
 
 has default_type => (
-    is => 'ro',
-    isa => Str,
+    is      => 'ro',
+    isa     => Str,
     default => 'default',
 );
 
@@ -39,9 +39,9 @@ the value of this attribute:
 
 =over
 
-=item * a hash reference to be passed to Dancer::Plugin::PageHistory::Page->new
+=item * a hash reference to be passed to Dancer2::Plugin::PageHistory::Page->new
 
-=item * a Dancer::Plugin::PageHistory::Page object
+=item * a Dancer2::Plugin::PageHistory::Page object
 
 =back
 
@@ -49,10 +49,11 @@ the value of this attribute:
 
 has fallback_page => (
     is      => 'ro',
-    isa     => Maybe [ InstanceOf ['Dancer::Plugin::PageHistory::Page'] ],
+    isa     => Maybe [ InstanceOf ['Dancer2::Plugin::PageHistory::Page'] ],
     default => undef,
-    coerce =>
-      sub { $_[0] ? Dancer::Plugin::PageHistory::Page->new( %{$_[0]} ) : undef },
+    coerce  => sub {
+        $_[0] ? Dancer2::Plugin::PageHistory::Page->new( %{ $_[0] } ) : undef;
+    },
 );
 
 =head2 max_items
@@ -78,10 +79,10 @@ the start of the array reference.
 =cut
 
 has pages => (
-    is => 'rw',
-    isa =>
-      HashRef [ ArrayRef [ InstanceOf ['Dancer::Plugin::PageHistory::Page'] ] ],
-    coerce => \&_coerce_pages,
+    is  => 'rw',
+    isa => HashRef [
+        ArrayRef [ InstanceOf ['Dancer2::Plugin::PageHistory::Page'] ] ],
+    coerce    => \&_coerce_pages,
     predicate => 1,
 );
 
@@ -91,7 +92,7 @@ sub _coerce_pages {
         foreach my $page (@$list) {
             if ( !blessed($page) && ref($page) eq 'HASH' ) {
                 push @{ $pages{$type} },
-                  Dancer::Plugin::PageHistory::Page->new(%$page);
+                  Dancer2::Plugin::PageHistory::Page->new(%$page);
             }
         }
     }
@@ -119,10 +120,11 @@ has methods => (
 
 sub _trigger_methods {
     my ( $self, $methods ) = @_;
-    foreach my $method ( @$methods ) {
-        unless ( $self->can( $method )) {
-            quote_sub "Dancer::Plugin::PageHistory::PageSet::$method",
-              q{ return shift->pages->{$type} || []; }, { '$type' => \$method };
+    foreach my $method (@$methods) {
+        unless ( $self->can($method) ) {
+            quote_sub "Dancer2::Plugin::PageHistory::PageSet::$method",
+              q{ return shift->pages->{$type} || []; },
+              { '$type' => \$method };
         }
     }
 }
@@ -134,7 +136,7 @@ sub _trigger_methods {
 C<$args{type}> defaults to L</default_type>.
 
 In addition to C<type> other arguments should be those passed to C<new> in
-L<Dancer::Plugin::PageHistory::Page>.
+L<Dancer2::Plugin::PageHistory::Page>.
 
 =cut
 
@@ -145,7 +147,7 @@ sub add {
 
     die "args to add must include a defined path" unless defined $args{path};
 
-    my $page = Dancer::Plugin::PageHistory::Page->new( %args );
+    my $page = Dancer2::Plugin::PageHistory::Page->new(%args);
 
     if (   !$self->pages->{$type}
         || !$self->pages->{$type}->[0]
@@ -186,7 +188,6 @@ sub page_index {
     return $self->fallback_page;
 }
 
-
 =head2 latest_page($type)
 
 A convenience method equivalent to:
@@ -222,7 +223,7 @@ and in scalar context returns the same as an array reference.
 
 sub types {
     my $self = shift;
-    wantarray ? keys %{$self->pages} : [ keys %{$self->pages} ];
+    wantarray ? keys %{ $self->pages } : [ keys %{ $self->pages } ];
 }
 
 1;

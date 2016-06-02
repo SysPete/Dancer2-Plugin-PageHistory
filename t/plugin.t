@@ -3,7 +3,7 @@ use warnings;
 use Test::More import => ['!pass'];
 use Test::Exception;
 use Class::Load qw(load_class try_load_class);
-use Dancer::Plugin::PageHistory::PageSet;
+use Dancer2::Plugin::PageHistory::PageSet;
 use File::Spec;
 use File::Temp;
 use HTTP::Cookies;
@@ -17,7 +17,7 @@ use lib File::Spec->catdir( 't', 'TestApp', 'lib' );
 my @session_engines = (
     qw/
       CHI Cookie DBIC JSON Memcached Memcached::Fast MongoDB
-      PSGI Simple Storable YAML
+      PSGI Redis Simple Storable YAML
       /
 );
 
@@ -42,7 +42,7 @@ sub get_history {
     my $res = $test->request($req);
     ok( $res->is_success, "get $uri OK" );
     $jar->extract_cookies($res);
-    return Dancer::Plugin::PageHistory::PageSet->new(
+    return Dancer2::Plugin::PageHistory::PageSet->new(
         pages => JSON::from_json( $res->content ) );
 }
 
@@ -101,12 +101,18 @@ sub run_tests {
             return;
         }
         my $engine;
-        lives_ok( sub { $engine = Dancer::Session::MongoDB->create },
+        lives_ok( sub { $engine = Dancer2::Session::MongoDB->create },
             "create mongodb" );
     }
     elsif ( $engine eq 'PSGI' ) {
         unless ( try_load_class('Plack::Middleware::Session') ) {
             &fail_or_diag("Plack::Middleware::Session needed for this test");
+            return;
+        }
+    }
+    elsif ( $engine eq 'Redis' ) {
+        unless ( try_load_class('Dancer2::Session::Redis') ) {
+            &fail_or_diag("Dancer2::Session::Redis needed for this test");
             return;
         }
     }
@@ -120,8 +126,8 @@ sub run_tests {
     # build the app
 
     my $app = sub {
-        use Dancer;
-        use Dancer::Plugin::PageHistory;
+        use Dancer2;
+        use Dancer2::Plugin::PageHistory;
 
         set plugins => {
             PageHistory => {
@@ -150,7 +156,7 @@ sub run_tests {
 
         set session => $engine;
 
-        #isa_ok( session, "Dancer::Session::$engine" );
+        #isa_ok( session, "Dancer2::Session::$engine" );
 
         get '/session/class' => sub {
             my $session = session;
@@ -173,8 +179,8 @@ sub run_tests {
         };
 
         my $env = shift;
-        my $request = Dancer::Request->new( env => $env );
-        Dancer->dance($request);
+        my $request = Dancer2::Request->new( env => $env );
+        Dancer2->dance($request);
     };
 
     if ( $engine eq 'PSGI' ) {
@@ -194,7 +200,7 @@ sub run_tests {
     $res = $test->request($req);
     ok( $res->is_success, "get /session/class OK" );
     $jar->extract_cookies($res);
-    cmp_ok( $res->content, "eq", "Dancer::Session::$engine", "class is good" );
+    cmp_ok( $res->content, "eq", "Dancer2::Session::$engine", "class is good" );
 
     $history = get_history('/one');
     cmp_ok( keys %{ $history->pages },  '==', 1,      "1 key in pages" );
@@ -249,7 +255,7 @@ sub run_tests {
 
 foreach my $engine (@session_engines) {
 
-    my $session_class = "Dancer::Session::$engine";
+    my $session_class = "Dancer2::Session::$engine";
     if ( try_load_class($session_class) ) {
         run_tests($engine);
     }

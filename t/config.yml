@@ -1,0 +1,28 @@
+log: debug
+logger: capture
+show_errors: 1
+template: simple
+
+plugins:
+  PageHistory:
+    add_all_pages: 1
+    ignore_ajax: 1
+    PageSet:
+      max_items: 3
+      methods:
+        - default
+        - product
+
+memcached_servers: "127.0.0.1:11211"
+mongodb_session_db: test_dancer_plugin_pagehistory
+mongodb_auto_reconnect: 0
+redis_session:
+  server: "127.0.0.1:6379"
+session_CHI:
+  driver: Memory
+  global: 1
+session_cookie_key: notagood secret
+session_name: 'dancer.session'
+session_memcached_fast_servers: "127.0.0.1:11211"
+session_memcached_fast_namespace: page_history_testing
+

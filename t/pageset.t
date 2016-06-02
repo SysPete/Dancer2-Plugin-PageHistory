@@ -2,17 +2,17 @@ use strict;
 use warnings;
 use Test::More;
 use Test::Exception;
-use Dancer::Plugin::PageHistory::Page;
-use Dancer::Plugin::PageHistory::PageSet;
+use Dancer2::Plugin::PageHistory::Page;
+use Dancer2::Plugin::PageHistory::PageSet;
 
 my ( $data, $page, $pages );
 
 # new, methods & (fallback|current|previous)_page tests
 
-lives_ok( sub { $pages = Dancer::Plugin::PageHistory::PageSet->new },
+lives_ok( sub { $pages = Dancer2::Plugin::PageHistory::PageSet->new },
     "PageSet->new with no args" );
 
-isa_ok( $pages, "Dancer::Plugin::PageHistory::PageSet", "pages class" )
+isa_ok( $pages, "Dancer2::Plugin::PageHistory::PageSet", "pages class" )
   or diag explain $pages;
 
 can_ok( $pages, qw(max_items pages latest_page previous_page methods add) );
@@ -28,7 +28,7 @@ ok( !defined $page, "previous_page is undef" );
 lives_ok(
     sub {
         $pages =
-          Dancer::Plugin::PageHistory::PageSet->new( fallback_page => undef );
+          Dancer2::Plugin::PageHistory::PageSet->new( fallback_page => undef );
     },
     "PageSet->new with fallback_page undef"
 );
@@ -44,7 +44,7 @@ ok( !defined $page, "previous_page is undef" );
 lives_ok(
     sub {
         $pages =
-          Dancer::Plugin::PageHistory::PageSet->new(
+          Dancer2::Plugin::PageHistory::PageSet->new(
             fallback_page => { path => '/foo' } );
     },
     "PageSet->new with fallback_page { path => '/foo' }"
@@ -59,13 +59,13 @@ lives_ok( sub { $page = $pages->previous_page }, "get previous_page" );
 cmp_ok( $page->path, "eq", "/foo", "previous_page is expected fallback page" );
 
 lives_ok(
-    sub { $page = Dancer::Plugin::PageHistory::Page->new( path => '/bar' ) },
+    sub { $page = Dancer2::Plugin::PageHistory::Page->new( path => '/bar' ) },
     "create page object" );
 
 lives_ok(
     sub {
         $pages =
-          Dancer::Plugin::PageHistory::PageSet->new( fallback_page => $page );
+          Dancer2::Plugin::PageHistory::PageSet->new( fallback_page => $page );
     },
     "PageSet->new with fallback_page as Page object"
 );
@@ -81,7 +81,7 @@ cmp_ok( $page->path, "eq", "/bar", "previous_page is expected fallback page" );
 throws_ok(
     sub {
         $pages =
-          Dancer::Plugin::PageHistory::PageSet->new( fallback_page => [] );
+          Dancer2::Plugin::PageHistory::PageSet->new( fallback_page => [] );
     },
     qr/coercion.+failed/,
     "PageSet->new with fallback_page as empty list"
@@ -90,7 +90,7 @@ throws_ok(
 throws_ok(
     sub {
         $pages =
-          Dancer::Plugin::PageHistory::PageSet->new( fallback_page => "foo" );
+          Dancer2::Plugin::PageHistory::PageSet->new( fallback_page => "foo" );
     },
     qr/coercion.+failed/,
     "PageSet->new with fallback_page as scalar"
@@ -115,7 +115,7 @@ $data = {
 
 lives_ok(
     sub {
-        $pages = Dancer::Plugin::PageHistory::PageSet->new(
+        $pages = Dancer2::Plugin::PageHistory::PageSet->new(
             max_items => 3,
             methods   => [ 'default', 'bananas', 'apples' ],
             pages     => $data
@@ -137,7 +137,7 @@ foreach my $type ( $pages->types ) {
     foreach my $page ( @{ $pages->pages->{$type} } ) {
         isa_ok(
             $page,
-            "Dancer::Plugin::PageHistory::Page",
+            "Dancer2::Plugin::PageHistory::Page",
             "$type " . $page->path
         ) && $count++
     }

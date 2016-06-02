@@ -1,8 +1,8 @@
-package Dancer::Plugin::PageHistory::Page;
+package Dancer2::Plugin::PageHistory::Page;
 
 =head1 NAME
 
-Dancer::Plugin::PageHistory::Page - Page object for Dancer::Plugin::PageHistory
+Dancer2::Plugin::PageHistory::Page - Page object for Dancer2::Plugin::PageHistory
 
 =cut
 

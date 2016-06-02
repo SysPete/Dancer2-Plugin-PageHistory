@@ -4,8 +4,8 @@ use Test::More tests => 1;
 
 BEGIN {
     $ENV{PATH} = '/bin:/usr/bin';
-    use_ok( 'Dancer::Plugin::PageHistory' ) || print "Bail out!
+    use_ok( 'Dancer2::Plugin::PageHistory' ) || print "Bail out!
 ";
 }
 
-diag( "Testing Dancer::Plugin::PageHistory $Dancer::Plugin::PageHistory::VERSION, Perl $], $^X" );
+diag( "Testing Dancer2::Plugin::PageHistory $Dancer2::Plugin::PageHistory::VERSION, Perl $], $^X" );

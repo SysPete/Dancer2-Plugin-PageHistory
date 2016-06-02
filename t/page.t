@@ -2,25 +2,25 @@ use strict;
 use warnings;
 use Test::More;
 use Test::Exception;
-use Dancer::Plugin::PageHistory::Page;
+use Dancer2::Plugin::PageHistory::Page;
 
 my $page;
 
 throws_ok(
-    sub { $page = Dancer::Plugin::PageHistory::Page->new },
+    sub { $page = Dancer2::Plugin::PageHistory::Page->new },
     qr/Missing required arguments: path/,
     "Page->new with no args"
 );
 
 throws_ok(
-    sub { $page = Dancer::Plugin::PageHistory::Page->new( path => {} ) },
+    sub { $page = Dancer2::Plugin::PageHistory::Page->new( path => {} ) },
     qr/did not pass type constraint/,
     "Page->new bad type for path"
 );
 
 throws_ok(
     sub {
-        $page = Dancer::Plugin::PageHistory::Page->new(
+        $page = Dancer2::Plugin::PageHistory::Page->new(
             path         => '/',
             query_string => {},
         );
@@ -31,7 +31,7 @@ throws_ok(
 
 throws_ok(
     sub {
-        $page = Dancer::Plugin::PageHistory::Page->new(
+        $page = Dancer2::Plugin::PageHistory::Page->new(
             path       => '/',
             attributes => ''
         );
@@ -42,7 +42,7 @@ throws_ok(
 
 throws_ok(
     sub {
-        $page = Dancer::Plugin::PageHistory::Page->new(
+        $page = Dancer2::Plugin::PageHistory::Page->new(
             path  => '/',
             title => {}
         );
@@ -53,12 +53,12 @@ throws_ok(
 
 lives_ok(
     sub {
-        $page = Dancer::Plugin::PageHistory::Page->new( path => '/some/path', );
+        $page = Dancer2::Plugin::PageHistory::Page->new( path => '/some/path', );
     },
     "Page->new path=>/home/path"
 );
 
-isa_ok( $page, "Dancer::Plugin::PageHistory::Page", "page class" );
+isa_ok( $page, "Dancer2::Plugin::PageHistory::Page", "page class" );
 
 can_ok( $page,
     qw( attributes path query_string title uri has_attributes has_title) );
@@ -73,7 +73,7 @@ ok( !$page->has_title, "has_title false" );
 
 lives_ok(
     sub {
-        $page = Dancer::Plugin::PageHistory::Page->new(
+        $page = Dancer2::Plugin::PageHistory::Page->new(
             attributes   => { foo => "bar" },
             path         => '/some/path',
             query_string => 'a=123&b=456',
