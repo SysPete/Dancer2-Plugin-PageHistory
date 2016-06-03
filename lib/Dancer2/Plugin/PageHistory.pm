@@ -153,7 +153,7 @@ has add_all_pages => (
     from_config => sub { 0 },
 );
 
-has ingore_ajax => (
+has ignore_ajax => (
     is          => 'ro',
     isa         => Bool,
     from_config => sub { 0 },
@@ -161,7 +161,7 @@ has ingore_ajax => (
 
 has history_name => (
     is          => 'ro',
-    isa         => Bool,
+    isa         => Str,
     from_config => sub { 'page_history' },
 );
 
@@ -184,7 +184,8 @@ sub BUILD {
 
                 return
                   if ( !$plugin->add_all_pages
-                    || ( $plugin->ignore_ajax && request->is_ajax ) );
+                    || (   $plugin->ignore_ajax
+                        && $plugin->app->request->is_ajax ) );
 
                 $plugin->add_to_history;
             },
@@ -215,31 +216,19 @@ sub add_to_history {
 
     my $history = $plugin->history;
 
-    # add the page and save back to session with pages all unblessed
     $history->add( %args );
+
     $plugin->app->session->write(
         $plugin->history_name => unbless( $history->pages ) );
 }
 
 sub history {
     my $plugin = shift;
-    my $history;
 
-    if ( my $history = $plugin->app->request->var( $plugin->history_name ) ) {
-        return $history;
-    }
-
-    my $session_history = $plugin->app->session->read( $plugin->history_name );
-
-    $session_history = {} unless ref($session_history) eq 'HASH';
-
-    my $args = $plugin->page_set_args;
-    $args->{pages} = $session_history;
-
-    my $history = Dancer2::Plugin::PageHistory::PageSet->new(%$args);
-    $plugin->app->request->var( $plugin->history_name => $history );
-
-    return $history;
+    return Dancer2::Plugin::PageHistory::PageSet->new(
+        %{ $plugin->page_set_args },
+        pages => $plugin->app->session->read( $plugin->history_name ) || {},
+    );
 }
 
 =head1 TODO
@@ -257,7 +246,7 @@ and L<Dancer2::Session::PSGI>
 
 =head1 AUTHOR
 
-Peter Mottram (SysPete), "peter@sysnix.com"
+Peter Mottram (SysPete), C<< <peter@sysnix.com> >>
 
 =head1 BUGS
 
@@ -287,7 +276,7 @@ You can also look for information at:
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2015 Peter Mottram (SysPete).
+Copyright 2015-2016 Peter Mottram (SysPete).
 
 This program is free software; you can redistribute it and/or modify
 it under the same terms as the Perl 5 programming language system itself.
