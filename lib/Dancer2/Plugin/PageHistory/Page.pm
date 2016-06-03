@@ -7,7 +7,7 @@ Dancer2::Plugin::PageHistory::Page - Page object for Dancer2::Plugin::PageHistor
 =cut
 
 use Moo;
-use Types::Standard qw(Str HashRef);
+use Dancer2::Core::Types qw(Str HashRef);
 use namespace::clean;
 
 =head1 ATTRIBUTES
