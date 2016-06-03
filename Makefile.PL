@@ -15,14 +15,11 @@ WriteMakefile(
         'ExtUtils::MakeMaker' => 0,
     },
     BUILD_REQUIRES => {
-        'Class::Load'           => 0,
-        'File::Spec'            => 0,
-        'File::Temp'            => 0,
         'HTTP::Cookies'         => 0,
         'HTTP::Request::Common' => 0,
         'JSON'                  => 0,
         'Plack'                 => '1.0031',
-        'Test::Exception'       => 0,
+        'Test::Fatal'           => 0,
         'Test::More'            => 0,
     },
     PREREQ_PM => {
