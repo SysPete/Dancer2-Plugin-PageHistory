@@ -28,6 +28,14 @@ sub get_history {
 sub run_tests {
     my ( $req, $res, $history );
 
+    my $settings = shift;
+    {
+        use Dancer2 appname => 'TestApp';
+        foreach my $key ( keys %$settings ) {
+            set $key => $settings->{$key};
+        }
+    }
+
     $app = TestApp->to_app;
     ok ref($app) eq 'CODE', "Got an app";
 

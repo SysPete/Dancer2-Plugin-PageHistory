@@ -6,7 +6,10 @@ use Test::More;
 use lib 't/lib';
 
 BEGIN {
-    $ENV{DANCER_ENVIRONMENT} = 'dbic';
+    $ENV{DANCER_ENVIRONMENT} = 'json';
+
+    eval 'use Dancer2::Session::DBIC';
+    plan skip_all => "Dancer2::Session::DBIC required to run these tests" if $@;
 
     eval 'use DBIx::Class';
     plan skip_all => "DBIx::Class required to run these tests" if $@;
