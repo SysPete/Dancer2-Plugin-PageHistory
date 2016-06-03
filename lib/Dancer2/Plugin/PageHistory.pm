@@ -10,7 +10,7 @@ Version 0.200
 
 =cut
 
-our $VERSION = '0.102';
+our $VERSION = '0.200';
 
 use Dancer2::Core::Types qw/Bool HashRef Str/;
 use Dancer2::Plugin;
