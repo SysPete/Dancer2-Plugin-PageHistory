@@ -59,29 +59,11 @@ user's session.
 
 =head1 SUPPORTED SESSION ENGINES
 
-L<CHI|Dancer2::Session::CHI>,
-x L<Cookie|Dancer2::Session::Cookie>, 
-x L<DBIC|Dancer2::Session::DBIC>,
-x L<JSON|Dancer2::Session::JSON>,
-x L<Memcached|Dancer2::Session::Memcached>,
-L<Memcached::Fast|Dancer2::Session::Memcached::Fast>,
-x L<MongoDB|Dancer2::Session::MongoDB>,
-x L<PSGI|Dancer2::Session::PSGI>,
-x L<Simple|Dancer2::Session::Simple>,
-L<Storable|Dancer2::Session::Storable>,
-x L<YAML|Dancer2::Session::YAML>
-
-Dancer2::Session::CGISession
-Dancer2::Session::Redis
-Dancer2::Session::Sereal - 
-
-=head1 CAVEATS
-
-L<Dancer2::Session::Cookie> and L<Dancer2::Session::PSGI> either don't handle
-destroy at all or else do it wrong so I suggest you avoid those modules if
-you want things like logout to work.
-
-See L</TODO>.
+L<Cookie|Dancer2::Session::Cookie>, 
+L<DBIC|Dancer2::Session::DBIC>,
+L<JSON|Dancer2::Session::JSON>,
+L<Simple|Dancer2::Session::Simple>,
+L<YAML|Dancer2::Session::YAML>
 
 =head1 CONFIGURATION
 
@@ -237,10 +219,14 @@ sub history {
 
 =item * Add more tests
 
-=item * Add support for more session engines
+=item * Add support for more session engines including:
 
-=item * investigate C<destroy> problems with L<Dancer2::Session::Cookie>
-and L<Dancer2::Session::PSGI>
+L<CGISession|Dancer2::Session::CGISession>,
+L<Memcached|Dancer2::Session::Memcached>,
+L<MongoDB|Dancer2::Session::MongoDB>,
+L<PSGI|Dancer2::Session::PSGI>,
+L<Redis|Dancer2::Session::Redis>,
+L<Sereal|Dancer2::Session::Sereal>,
 
 =back
 
