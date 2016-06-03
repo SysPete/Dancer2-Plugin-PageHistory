@@ -2,11 +2,10 @@
 ^.*\.tar.gz$
 ^.*.bak
 ^.*.old
+^.*.swp
 .gitignore
 .travis.yml
-t/TestApp/sessions
 t/not_tested
-t/TestApp/environments/PSGI.yml
-t/TestApp/logs/*
 README.md
 bin/generate_readme
+session

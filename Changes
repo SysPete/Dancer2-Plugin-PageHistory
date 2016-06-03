@@ -1,4 +1,10 @@
-Revision history for Dancer::Plugin::PageHistory
+Revision history for Dancer2::Plugin::PageHistory
+
+0.200 Fri  3 Jun 18:50:28 CEST 2016
+
+    ** First release for Dancer2 **
+
+    Older changelog entries refer to the original Dancer1 plugin
 
 0.102 Mon 21 Sep 10:58:40 CEST 2015
 

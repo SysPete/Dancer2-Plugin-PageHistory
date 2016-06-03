@@ -6,7 +6,7 @@ Dancer2::Plugin::PageHistory - store recent page history for user into session
 
 =head1 VERSION
 
-Version 0.102
+Version 0.200
 
 =cut
 

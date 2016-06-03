@@ -13,10 +13,12 @@ all_pod_files_spelling_ok();
 
 __END__
 ajax
+CGISession
 DBIC
 logout
 Mottram
 PRs
+Redis
 SKU
 SysPete
 TODO
