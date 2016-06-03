@@ -6,11 +6,11 @@ Dancer2::Plugin::PageHistory - store recent page history for user into session
 
 =head1 VERSION
 
-Version 0.200
+Version 0.201
 
 =cut
 
-our $VERSION = '0.200';
+our $VERSION = '0.201';
 
 use Dancer2::Core::Types qw/Bool HashRef Str/;
 use Dancer2::Plugin;
@@ -62,6 +62,7 @@ user's session.
 L<Cookie|Dancer2::Session::Cookie>, 
 L<DBIC|Dancer2::Session::DBIC>,
 L<JSON|Dancer2::Session::JSON>,
+L<Redis|Dancer2::Session::Redis>,
 L<Simple|Dancer2::Session::Simple>,
 L<YAML|Dancer2::Session::YAML>
 
@@ -225,7 +226,6 @@ L<CGISession|Dancer2::Session::CGISession>,
 L<Memcached|Dancer2::Session::Memcached>,
 L<MongoDB|Dancer2::Session::MongoDB>,
 L<PSGI|Dancer2::Session::PSGI>,
-L<Redis|Dancer2::Session::Redis>,
 L<Sereal|Dancer2::Session::Sereal>,
 
 =back

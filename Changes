@@ -1,5 +1,9 @@
 Revision history for Dancer2::Plugin::PageHistory
 
+0.201 Fri  3 Jun 20:49:34 CEST 2016
+
+    * Add support for Dancer2::Session::Redis
+
 0.200 Fri  3 Jun 18:50:28 CEST 2016
 
     ** First release for Dancer2 **

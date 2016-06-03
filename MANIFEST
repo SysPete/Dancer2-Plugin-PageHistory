@@ -10,12 +10,14 @@ t/00-load.t
 t/config.yml
 t/environments/cookie.yml
 t/environments/dbic.yml
+t/environments/redis.yml
 t/manifest.t
 t/page.t
 t/pageset.t
 t/session-cookie.t
 t/session-dbic.t
 t/session-json.t
+t/session-redis.t
 t/session-simple.t
 t/session-yaml.t
 t/pod.t
