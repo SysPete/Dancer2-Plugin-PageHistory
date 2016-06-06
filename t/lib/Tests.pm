@@ -9,6 +9,7 @@ use Dancer2::Plugin::PageHistory::PageSet;
 use HTTP::Cookies;
 use HTTP::Request::Common;
 use JSON qw//;
+use Plack::Builder;
 use Plack::Test;
 use TestApp;
 
@@ -40,7 +41,18 @@ sub run_tests {
     ok ref($app) eq 'CODE', "Got an app";
 
     $jar  = HTTP::Cookies->new;
-    $test = Plack::Test->create($app);
+
+    if ( $settings->{session} && $settings->{session} eq 'PSGI' ) {
+        $test = Plack::Test->create(
+            builder {
+                enable "Session::Cookie", secret => 'only.for.testing';
+                $app
+            }
+        );
+    }
+    else {
+        $test = Plack::Test->create($app);
+    }
 
     $jar->clear;
 

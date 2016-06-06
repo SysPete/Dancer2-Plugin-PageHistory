@@ -64,6 +64,8 @@ L<Cookie|Dancer2::Session::Cookie>,
 L<DBIC|Dancer2::Session::DBIC>,
 L<JSON|Dancer2::Session::JSON>,
 L<Memcached|Dancer2::Session::Memcached>,
+L<MongoDB|Dancer2::Session::MongoDB>,
+L<PSGI|Dancer2::Session::PSGI>,
 L<Redis|Dancer2::Session::Redis>,
 L<Sereal|Dancer2::Session::Sereal>,
 L<Simple|Dancer2::Session::Simple>,
@@ -222,11 +224,6 @@ sub history {
 =over
 
 =item * Add more tests
-
-=item * Add support for more session engines including:
-
-L<MongoDB|Dancer2::Session::MongoDB>,
-L<PSGI|Dancer2::Session::PSGI>,
 
 =back
 
