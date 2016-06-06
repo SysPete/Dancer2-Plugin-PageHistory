@@ -63,6 +63,7 @@ L<CGISession|Dancer2::Session::CGISession>,
 L<Cookie|Dancer2::Session::Cookie>, 
 L<DBIC|Dancer2::Session::DBIC>,
 L<JSON|Dancer2::Session::JSON>,
+L<Memcached|Dancer2::Session::Memcached>,
 L<Redis|Dancer2::Session::Redis>,
 L<Sereal|Dancer2::Session::Sereal>,
 L<Simple|Dancer2::Session::Simple>,
@@ -224,7 +225,6 @@ sub history {
 
 =item * Add support for more session engines including:
 
-L<Memcached|Dancer2::Session::Memcached>,
 L<MongoDB|Dancer2::Session::MongoDB>,
 L<PSGI|Dancer2::Session::PSGI>,
 
