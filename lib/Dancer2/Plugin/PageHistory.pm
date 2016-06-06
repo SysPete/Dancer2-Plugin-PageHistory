@@ -116,8 +116,7 @@ Defaults to 0. Set to 1 to have ajax requests ignored.
 This setting can be used to change the name of the key used to store
 the history object in the session from the default C<page_history> to
 something else. This is also the key used for name of the token
-containing the history object that is passed to templates and also the var
-used to cache the history object during the request lifetime.
+containing the history object that is passed to templates.
 
 =back
 
