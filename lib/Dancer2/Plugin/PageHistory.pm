@@ -1,4 +1,5 @@
 package Dancer2::Plugin::PageHistory;
+use utf8;
 
 =head1 NAME
 
@@ -229,6 +230,10 @@ sub history {
 =head1 AUTHOR
 
 Peter Mottram (SysPete), C<< <peter@sysnix.com> >>
+
+=head1 CONTRIBUTORS
+
+Slaven Rezić (eserte) - GH issue #1
 
 =head1 BUGS
 
