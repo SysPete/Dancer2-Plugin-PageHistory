@@ -1,5 +1,9 @@
 package Dancer2::Plugin::PageHistory;
 use utf8;
+use strict;
+use warnings;
+
+=encoding utf8
 
 =head1 NAME
 
