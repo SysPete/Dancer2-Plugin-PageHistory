@@ -11,6 +11,8 @@ BEGIN {
     $ENV{DANCER_APPHANDLER} = 'PSGI';
 }
 
+diag "Dancer2::Session::PSGI $Dancer2::Session::PSGI::VERSION";
+
 use Tests;
 
 Tests::run_tests( { session => 'PSGI' } );

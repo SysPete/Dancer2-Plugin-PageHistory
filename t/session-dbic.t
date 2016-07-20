@@ -36,6 +36,8 @@ BEGIN {
     is exception { schema->deploy }, undef, "Deploy DBIC schema lives";
 }
 
+diag "Dancer2::Session::DBIC $Dancer2::Session::DBIC::VERSION";
+
 use Tests;
 Tests::run_tests();
 

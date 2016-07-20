@@ -23,6 +23,8 @@ plan skip_all => "No MongoDB on localhost" unless $client;
 my $db = $client->get_database($db_name);
 $db->drop;
 
+diag "MongoDB $MongoDB::VERSION Dancer2::Session::MongoDB $Dancer2::Session::MongoDB::VERSION";
+
 use Tests;
 
 Tests::run_tests();

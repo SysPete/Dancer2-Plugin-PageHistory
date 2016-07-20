@@ -12,6 +12,8 @@ BEGIN {
 
 use Tests;
 
+diag "Dancer2::Session::CGISession $Dancer2::Session::CGISession::VERSION";
+
 Tests::run_tests( { session => 'CGISession' } );
 
 done_testing;

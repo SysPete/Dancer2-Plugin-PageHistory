@@ -12,6 +12,8 @@ BEGIN {
     plan skip_all => "Dancer2::Session::Cookie required to run these tests" if $@;
 }
 
+diag "Dancer2::Session::Cookie $Dancer2::Session::Cookie::VERSION";
+
 use Tests;
 
 Tests::run_tests( { session => 'Cookie' } );

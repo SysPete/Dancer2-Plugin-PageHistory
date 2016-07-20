@@ -12,6 +12,8 @@ BEGIN {
     plan skip_all => "Dancer2::Session::Redis required to run these tests" if $@;
 }
 
+diag "Dancer2::Session::Redis $Dancer2::Session::Redis::VERSION";
+
 use Tests;
 
 Tests::run_tests();
