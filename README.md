@@ -4,7 +4,7 @@ Dancer2::Plugin::PageHistory - store recent page history for user into session
 
 # VERSION
 
-Version 0.201
+Version 0.203
 
 # SYNOPSIS
 
@@ -47,10 +47,15 @@ user's session.
 
 # SUPPORTED SESSION ENGINES
 
+[CGISession](https://metacpan.org/pod/Dancer2::Session::CGISession),
 [Cookie](https://metacpan.org/pod/Dancer2::Session::Cookie), 
 [DBIC](https://metacpan.org/pod/Dancer2::Session::DBIC),
 [JSON](https://metacpan.org/pod/Dancer2::Session::JSON),
+[Memcached](https://metacpan.org/pod/Dancer2::Session::Memcached),
+[MongoDB](https://metacpan.org/pod/Dancer2::Session::MongoDB),
+[PSGI](https://metacpan.org/pod/Dancer2::Session::PSGI),
 [Redis](https://metacpan.org/pod/Dancer2::Session::Redis),
+[Sereal](https://metacpan.org/pod/Dancer2::Session::Sereal),
 [Simple](https://metacpan.org/pod/Dancer2::Session::Simple),
 [YAML](https://metacpan.org/pod/Dancer2::Session::YAML)
 
@@ -100,8 +105,7 @@ Configuration options for the plugin itself:
     This setting can be used to change the name of the key used to store
     the history object in the session from the default `page_history` to
     something else. This is also the key used for name of the token
-    containing the history object that is passed to templates and also the var
-    used to cache the history object during the request lifetime.
+    containing the history object that is passed to templates.
 
 # HOOKS
 
@@ -118,17 +122,14 @@ Puts history into the token `page_history`.
 # TODO
 
 - Add more tests
-- Add support for more session engines including:
-
-    [CGISession](https://metacpan.org/pod/Dancer2::Session::CGISession),
-    [Memcached](https://metacpan.org/pod/Dancer2::Session::Memcached),
-    [MongoDB](https://metacpan.org/pod/Dancer2::Session::MongoDB),
-    [PSGI](https://metacpan.org/pod/Dancer2::Session::PSGI),
-    [Sereal](https://metacpan.org/pod/Dancer2::Session::Sereal),
 
 # AUTHOR
 
 Peter Mottram (SysPete), `<peter@sysnix.com>`
+
+# CONTRIBUTORS
+
+Slaven Rezić (eserte) - GH issue #1
 
 # BUGS
 
@@ -161,3 +162,11 @@ This program is free software; you can redistribute it and/or modify
 it under the same terms as the Perl 5 programming language system itself.
 
 See http://dev.perl.org/licenses/ for more information.
+
+# POD ERRORS
+
+Hey! **The above document had some coding errors, which are explained below:**
+
+- Around line 236:
+
+    Non-ASCII character seen before =encoding in 'Rezić'. Assuming UTF-8

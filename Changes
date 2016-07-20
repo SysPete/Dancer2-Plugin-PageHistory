@@ -1,5 +1,12 @@
 Revision history for Dancer2::Plugin::PageHistory
 
+0.203 Wed 20 Jul 14:17:53 CEST 2016
+
+    [TESTS]
+
+    * have session tests diag the engine version
+    * Make sure we have a working memcached server in tests. Closes GH#1.
+
 0.202 Mon  6 Jun 13:56:57 CEST 2016
 
     [ENHANCEMENTS]

@@ -7,11 +7,11 @@ Dancer2::Plugin::PageHistory - store recent page history for user into session
 
 =head1 VERSION
 
-Version 0.202
+Version 0.203
 
 =cut
 
-our $VERSION = '0.202';
+our $VERSION = '0.203';
 
 use Dancer2::Core::Types qw/Bool HashRef Str/;
 use Dancer2::Plugin;

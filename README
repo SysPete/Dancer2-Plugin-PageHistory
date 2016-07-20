@@ -3,7 +3,7 @@ NAME
     session
 
 VERSION
-    Version 0.201
+    Version 0.203
 
 SYNOPSIS
         get '/product/:sku/:name' => sub {
@@ -35,7 +35,8 @@ KEYWORDS
     the user's session.
 
 SUPPORTED SESSION ENGINES
-    Cookie, DBIC, JSON, Redis, Simple, YAML
+    CGISession, Cookie, DBIC, JSON, Memcached, MongoDB, PSGI, Redis, Sereal,
+    Simple, YAML
 
 CONFIGURATION
     No configuration is necessarily required.
@@ -80,9 +81,7 @@ CONFIGURATION
         This setting can be used to change the name of the key used to store
         the history object in the session from the default "page_history" to
         something else. This is also the key used for name of the token
-        containing the history object that is passed to templates and also
-        the var used to cache the history object during the request
-        lifetime.
+        containing the history object that is passed to templates.
 
 HOOKS
     This plugin makes use of the following hooks:
@@ -96,12 +95,11 @@ HOOKS
 TODO
     *   Add more tests
 
-    *   Add support for more session engines including:
-
-        CGISession, Memcached, MongoDB, PSGI, Sereal,
-
 AUTHOR
     Peter Mottram (SysPete), "<peter@sysnix.com>"
+
+CONTRIBUTORS
+    Slaven Rezić (eserte) - GH issue #1
 
 BUGS
     Please report any bugs or feature requests via the project's GitHub
@@ -131,4 +129,11 @@ LICENSE AND COPYRIGHT
     under the same terms as the Perl 5 programming language system itself.
 
     See http://dev.perl.org/licenses/ for more information.
+
+POD ERRORS
+    Hey! The above document had some coding errors, which are explained
+    below:
+
+    Around line 236:
+        Non-ASCII character seen before =encoding in 'Rezić'. Assuming UTF-8
 
