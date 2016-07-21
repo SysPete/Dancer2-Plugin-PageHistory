@@ -4,7 +4,7 @@ Dancer2::Plugin::PageHistory - store recent page history for user into session
 
 # VERSION
 
-Version 0.203
+Version 0.204
 
 # SYNOPSIS
 

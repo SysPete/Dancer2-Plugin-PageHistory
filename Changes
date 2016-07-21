@@ -1,5 +1,17 @@
 Revision history for Dancer2::Plugin::PageHistory
 
+0.204 Thu 21 Jul 10:51:01 CEST 2016
+
+    [TESTS]
+
+    * Skip tests if connection to redis fails in session-redis.t instead
+      of having tests fail.
+
+    [MISC]
+
+    * use strict and warnings (kwalitee)
+    * set pod encoding to utf8
+
 0.203 Wed 20 Jul 14:17:53 CEST 2016
 
     [TESTS]
