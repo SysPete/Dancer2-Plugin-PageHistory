@@ -1,5 +1,11 @@
 Revision history for Dancer2::Plugin::PageHistory
 
+0.205 Mon 25 Jul 16:40:40 CEST 2016
+
+    [TESTS]
+
+    * Session::Redis tests need Sereal::Decoder and Sereal::Encoder
+
 0.204 Thu 21 Jul 10:51:01 CEST 2016
 
     [TESTS]
