@@ -1,0 +1,6 @@
+session: CGISession
+engines:
+    session:
+        CGISession:
+            driver_params:
+                Directory: sessions
