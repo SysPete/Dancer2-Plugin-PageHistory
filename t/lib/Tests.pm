@@ -105,17 +105,3 @@ sub run_tests {
 }
 
 1;
-__END__
-if ( $engine =~ /^(Cookie|PSGI)$/ ) {
-  TODO: {
-        local $TODO = "Cookie and PSGI don't handle destroy correctly";
-        cmp_ok( keys %{ $history->pages }, '==', 1, "1 key in pages" );
-        cmp_ok( @{ $history->default },    '==', 1, "1 page type default" );
-        ok( !defined $history->previous_page, "previous_page undef" );
-    }
-}
-else {
-    cmp_ok( keys %{ $history->pages }, '==', 1, "1 key in pages" );
-    cmp_ok( @{ $history->default },    '==', 1, "1 page type default" );
-    ok( !defined $history->previous_page, "previous_page undef" );
-}
