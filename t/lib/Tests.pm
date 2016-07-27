@@ -6,6 +6,7 @@ use warnings;
 use lib 't/lib';
 use Test::More;
 use Dancer2::Plugin::PageHistory::PageSet;
+use File::Path;
 use HTTP::Cookies;
 use HTTP::Request::Common;
 use JSON qw//;
@@ -99,6 +100,8 @@ sub run_tests {
 
     $history = get_history('/one');
     cmp_ok( $history->latest_page->uri, "eq", "/one", "latest_page OK" );
+
+    File::Path::rmtree('sessions');
 }
 
 1;

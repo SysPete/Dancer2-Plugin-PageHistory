@@ -15,6 +15,7 @@ WriteMakefile(
         'ExtUtils::MakeMaker' => 0,
     },
     BUILD_REQUIRES => {
+        'File::Path'            => 0,
         'HTTP::Cookies'         => 0,
         'HTTP::Request::Common' => 0,
         'JSON'                  => 0,
