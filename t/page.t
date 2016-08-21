@@ -14,7 +14,7 @@ throws_ok(
 
 throws_ok(
     sub { $page = Dancer2::Plugin::PageHistory::Page->new( path => {} ) },
-    qr/did not pass type constraint/,
+    qr/did not pass type constraint|is not a string/,
     "Page->new bad type for path"
 );
 
@@ -25,7 +25,7 @@ throws_ok(
             query_string => {},
         );
     },
-    qr/did not pass type constraint/,
+    qr/did not pass type constraint|is not a string/,
     "Page->new bad query"
 );
 
@@ -36,7 +36,7 @@ throws_ok(
             attributes => ''
         );
     },
-    qr/did not pass type constraint/,
+    qr/did not pass type constraint|is not a HashRef/,
     "Page->new bad attributes"
 );
 
@@ -47,7 +47,7 @@ throws_ok(
             title => {}
         );
     },
-    qr/did not pass type constraint/,
+    qr/did not pass type constraint|is not a string/,
     "Page->new bad title"
 );
 
