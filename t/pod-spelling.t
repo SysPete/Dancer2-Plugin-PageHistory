@@ -15,10 +15,14 @@ __END__
 ajax
 CGISession
 DBIC
+eserte
+GH
 logout
 Mottram
 PRs
 Redis
+Rezić
 SKU
+Slaven
 SysPete
 TODO
