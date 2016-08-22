@@ -1,5 +1,12 @@
 Revision history for Dancer2::Plugin::PageHistory
 
+0.206 Sun 21 Aug 13:21:27 CEST 2016
+
+    [TESTS]
+
+    * Update type check tests to cope with Dancer2 switch back to
+      MooX::Types::MooseLike
+
 0.205 Mon 25 Jul 16:40:40 CEST 2016
 
     [TESTS]
