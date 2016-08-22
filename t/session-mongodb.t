@@ -15,13 +15,16 @@ BEGIN {
     plan skip_all => "Dancer2::Session::MongoDB required to run these tests" if $@;
 }
 
-my $db_name = 'test_dancer2_plugin_page_history';
-my $client = eval { MongoDB::MongoClient->new; };
-plan skip_all => "No MongoDB on localhost" unless $client;
+my $db;
+eval {
+    my $db_name = 'test_dancer2_plugin_page_history';
+    my $client = MongoDB::MongoClient->new;
+    $db = $client->get_database($db_name);
+    $db->drop;
+};
+plan skip_all => "No MongoDB on localhost" if $@;
 
 # make sure we clean up from prior runs
-my $db = $client->get_database($db_name);
-$db->drop;
 
 diag "MongoDB $MongoDB::VERSION Dancer2::Session::MongoDB $Dancer2::Session::MongoDB::VERSION";
 
