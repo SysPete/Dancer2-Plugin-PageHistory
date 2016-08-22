@@ -1,5 +1,11 @@
 Revision history for Dancer2::Plugin::PageHistory
 
+0.207 Mon 22 Aug 18:06:34 CEST 2016
+
+    [TESTS]
+
+    * Improve check for non-running MongoDB server (GH#3, Slaven Rezić)
+
 0.206 Sun 21 Aug 13:21:27 CEST 2016
 
     [TESTS]

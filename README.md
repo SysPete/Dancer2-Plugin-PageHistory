@@ -4,7 +4,7 @@ Dancer2::Plugin::PageHistory - store recent page history for user into session
 
 # VERSION
 
-Version 0.205
+Version 0.207
 
 # SYNOPSIS
 
@@ -129,7 +129,7 @@ Peter Mottram (SysPete), `<peter@sysnix.com>`
 
 # CONTRIBUTORS
 
-Slaven Rezić (eserte) - GH issue #1
+Slaven Rezić (eserte) - GH issues #1, #2, #3
 
 # BUGS
 
