@@ -1,5 +1,18 @@
 Revision history for Dancer2::Plugin::PageHistory
 
+0.208 Fri 26 Aug 15:04:11 CEST 2016
+
+    [TESTS]
+
+    * Session::Redis must be at least 0.008 for tests.
+      This is due to D2 flipping from MooX::Types::MooseLike to Type::Tiny
+      and then back again.
+
+    * Session::Cookie test had wrong 'session' setting closes GH #4.
+      Somehow managed to set session to 'DBIC' so were not actually testing
+      against Session::Cookie but actually against Session::DBIC.
+      Thanks to andk for heads up.
+
 0.207 Mon 22 Aug 18:06:34 CEST 2016
 
     [TESTS]
