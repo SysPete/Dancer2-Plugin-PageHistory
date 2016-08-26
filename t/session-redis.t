@@ -11,8 +11,8 @@ BEGIN {
     eval 'use Redis';
     plan skip_all => "Redis required to run these tests" if $@;
 
-    eval 'use Dancer2::Session::Redis';
-    plan skip_all => "Dancer2::Session::Redis required to run these tests" if $@;
+    eval 'use Dancer2::Session::Redis 0.008';
+    plan skip_all => "Dancer2::Session::Redis >= 0.008 required to run these tests" if $@;
 
     eval 'use Sereal::Decoder';
     plan skip_all => "Sereal::Decoder required to run these tests" if $@;
