@@ -237,7 +237,8 @@ Peter Mottram (SysPete), C<< <peter@sysnix.com> >>
 
 =head1 CONTRIBUTORS
 
-Slaven Rezić (eserte) - GH issues #1, #2, #3
+ Slaven Rezić (eserte) - GH issues #1, #2, #3
+ Andreas J. König (andk) - GH issue #4
 
 =head1 BUGS
 

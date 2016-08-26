@@ -1,4 +1,4 @@
-session: DBIC
+session: Cookie
 engines:
     session:
         Cookie:
