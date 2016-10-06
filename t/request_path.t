@@ -9,7 +9,7 @@ BEGIN {
 use Test::More;
 use HTTP::Cookies;
 use HTTP::Request::Common;
-use JSON qw//;
+use JSON::MaybeXS;
 use Plack::Builder;
 use Plack::Test;
 
@@ -47,7 +47,7 @@ subtest '... app mounted at /' => sub {
     ok( $res->is_success, "get /my/path OK" );
 
     # הלו gets url encoded to %D7%94%D7%9C%D7%95
-    is_deeply JSON::from_json( $res->content ),
+    is_deeply decode_json( $res->content ),
       {
         path         => '/my/path',
         query_string => 'foo=%D7%94%D7%9C%D7%95',
@@ -70,7 +70,7 @@ subtest '... app mounted at /' => sub {
     my $res = $test->request($req);
     ok( $res->is_success, "get /bar/my/path OK" );
 
-    is_deeply JSON::from_json( $res->content ),
+    is_deeply decode_json( $res->content ),
       {
         path         => '/my/path',
         query_string => 'foo=%D7%94%D7%9C%D7%95',

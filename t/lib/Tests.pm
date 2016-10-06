@@ -9,7 +9,7 @@ use Dancer2::Plugin::PageHistory::PageSet;
 use File::Path;
 use HTTP::Cookies;
 use HTTP::Request::Common;
-use JSON qw//;
+use JSON::MaybeXS;
 use Plack::Builder;
 use Plack::Test;
 use TestApp;
@@ -24,7 +24,7 @@ sub get_history {
     ok( $res->is_success, "get $uri OK" );
     $jar->extract_cookies($res);
     return Dancer2::Plugin::PageHistory::PageSet->new(
-        pages => JSON::from_json( $res->content ) );
+        pages => decode_json( $res->content ) );
 }
 
 sub run_tests {
