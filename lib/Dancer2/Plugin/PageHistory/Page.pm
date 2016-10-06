@@ -159,13 +159,26 @@ The following predicate methods are defined:
 
 =head2 uri
 
-Returns the string URI for L</path> and L</query>.
+Returns the string URI for L</path> and L</query_string>.
 
 =cut
 
 sub uri {
     my $self = shift;
     my $uri = $self->path;
+    $uri .= '?' . $self->query_string if $self->query_string;
+    return "$uri";
+}
+
+=head2 request_uri
+
+Returns the string URI for L</request_path> and L</query_string>.
+
+=cut
+
+sub request_uri {
+    my $self = shift;
+    my $uri = $self->request_path;
     $uri .= '?' . $self->query_string if $self->query_string;
     return "$uri";
 }

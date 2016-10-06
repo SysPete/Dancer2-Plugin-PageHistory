@@ -22,7 +22,17 @@ use Plack::Test;
 
     get '/**' => sub {
         content_type('application/json');
-        return to_json( session('page_history') );
+        my $page = history->latest_page;
+
+        return to_json(
+            {
+                path         => $page->path,
+                query_string => $page->query_string,
+                request_path => $page->request_path,
+                uri          => $page->uri,
+                request_uri  => $page->request_uri,
+            }
+        );
     };
 }
 
@@ -39,13 +49,11 @@ subtest '... app mounted at /' => sub {
     # הלו gets url encoded to %D7%94%D7%9C%D7%95
     is_deeply JSON::from_json( $res->content ),
       {
-        default => [
-            {
-                path         => '/my/path',
-                query_string => 'foo=%D7%94%D7%9C%D7%95',
-                request_path => '/my/path'
-            }
-        ]
+        path         => '/my/path',
+        query_string => 'foo=%D7%94%D7%9C%D7%95',
+        request_path => '/my/path',
+        uri          => '/my/path?foo=%D7%94%D7%9C%D7%95',
+        request_uri  => '/my/path?foo=%D7%94%D7%9C%D7%95',
       },
       "Check PageHistory is OK";
 };
@@ -64,13 +72,11 @@ subtest '... app mounted at /' => sub {
 
     is_deeply JSON::from_json( $res->content ),
       {
-        default => [
-            {
-                path         => '/my/path',
-                query_string => 'foo=%D7%94%D7%9C%D7%95',
-                request_path => '/bar/my/path'
-            }
-        ]
+        path         => '/my/path',
+        query_string => 'foo=%D7%94%D7%9C%D7%95',
+        request_path => '/bar/my/path',
+        uri          => '/my/path?foo=%D7%94%D7%9C%D7%95',
+        request_uri  => '/bar/my/path?foo=%D7%94%D7%9C%D7%95',
       },
       "Check PageHistory is OK";
 };
