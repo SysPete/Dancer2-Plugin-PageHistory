@@ -21,9 +21,10 @@ WriteMakefile(
         'JSON'                  => 0,
         'Plack'                 => '1.0031',
         'Test::Fatal'           => 0,
-        'Test::More'            => 0,
+        'Test::More'            => '0.94', # subtest
     },
     PREREQ_PM => {
+        'Carp'                  => 0,
         'Dancer2'               => '0.200000',
         'Dancer2::Core::Types'  => 0,
         'Dancer2::Plugin'       => 0,
