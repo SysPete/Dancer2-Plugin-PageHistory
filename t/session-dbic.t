@@ -19,6 +19,13 @@ BEGIN {
 
     eval 'use DBICx::Sugar';
     plan skip_all => "DBICx::Sugar required to run these tests" if $@;
+
+    require DBIx::Class::Optional::Dependencies;
+    my $deps = DBIx::Class::Optional::Dependencies->req_list_for('deploy');
+    for (keys %$deps) {
+        eval "use $_ $deps->{$_}";
+        plan skip_all => "$_ >= $deps->{$_} required to run these tests" if $@;
+    }
 }
 
 BEGIN {
