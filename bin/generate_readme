@@ -1,2 +1,2 @@
-perl -MPod::Markdown::Github -e "Pod::Markdown::Github->filter('lib/Dancer2/Plugin/PageHistory.pm')" > README.md
-perldoc -t lib/Dancer2/Plugin/PageHistory.pm > README
+pod2markdown lib/Dancer2/Plugin/PageHistory.pm > README.md
+pod2text lib/Dancer2/Plugin/PageHistory.pm > README

@@ -3,7 +3,7 @@ NAME
     session
 
 VERSION
-    Version 0.207
+    Version 0.209
 
 SYNOPSIS
         get '/product/:sku/:name' => sub {
@@ -99,7 +99,8 @@ AUTHOR
     Peter Mottram (SysPete), "<peter@sysnix.com>"
 
 CONTRIBUTORS
-    Slaven Rezić (eserte) - GH issues #1, #2, #3
+     Slaven Rezić (eserte) - GH issues #1, #2, #3
+     Andreas J. König (andk) - GH issue #4
 
 BUGS
     Please report any bugs or feature requests via the project's GitHub

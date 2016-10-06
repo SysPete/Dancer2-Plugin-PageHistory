@@ -4,24 +4,22 @@ Dancer2::Plugin::PageHistory - store recent page history for user into session
 
 # VERSION
 
-Version 0.207
+Version 0.209
 
 # SYNOPSIS
 
-```perl
-get '/product/:sku/:name' => sub {
-    add_to_history(
-        type       => 'product',
-        title      => param('name'),
-        attributes => { sku => param('sku') }
-    );
-};
+    get '/product/:sku/:name' => sub {
+        add_to_history(
+            type       => 'product',
+            title      => param('name'),
+            attributes => { sku => param('sku') }
+        );
+    };
 
-hook 'before_template_render' => sub {
-    my $tokens = shift;
-    $tokens->{previous_page} = history->previous_page->uri;
-};
-```
+    hook 'before_template_render' => sub {
+        my $tokens = shift;
+        $tokens->{previous_page} = history->previous_page->uri;
+    };
 
 # DESCRIPTION
 
@@ -67,23 +65,21 @@ If you wish to have arguments passed to
 ["new" in Dancer2::Plugin::PageHistory::PageSet](https://metacpan.org/pod/Dancer2::Plugin::PageHistory::PageSet#new) these can be added to your
 configuration along with configuration for the plugin itself, e.g.:
 
-```
-   plugins:
-     PageHistory:
-       add_all_pages: 1
-       ingore_ajax: 1 
-       history_name: someothername
-       PageSet:
-         default_type: all
-         fallback_page:
-           path: "/"
-         max_items: 20
-         methods:
-           - default
-           - product
-           - navigation
-
-```
+       plugins:
+         PageHistory:
+           add_all_pages: 1
+           ingore_ajax: 1 
+           history_name: someothername
+           PageSet:
+             default_type: all
+             fallback_page:
+               path: "/"
+             max_items: 20
+             methods:
+               - default
+               - product
+               - navigation
+    
 
 Configuration options for the plugin itself:
 
@@ -129,7 +125,8 @@ Peter Mottram (SysPete), `<peter@sysnix.com>`
 
 # CONTRIBUTORS
 
-Slaven Rezić (eserte) - GH issues #1, #2, #3
+    Slaven Rezić (eserte) - GH issues #1, #2, #3
+    Andreas J. König (andk) - GH issue #4
 
 # BUGS
 
@@ -145,9 +142,7 @@ progress on your bug as I make changes. PRs are always welcome.
 
 You can find documentation for this module with the perldoc command.
 
-```
-perldoc Dancer2::Plugin::PageHistory
-```
+    perldoc Dancer2::Plugin::PageHistory
 
 You can also look for information at:
 
