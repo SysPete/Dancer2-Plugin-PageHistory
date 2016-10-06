@@ -8,7 +8,7 @@ my $page;
 
 throws_ok(
     sub { $page = Dancer2::Plugin::PageHistory::Page->new },
-    qr/Missing required arguments: path/,
+    qr/Either 'request' or 'path' must be supplied as arg to new/,
     "Page->new with no args"
 );
 

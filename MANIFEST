@@ -16,6 +16,7 @@ t/environments/redis.yml
 t/manifest.t
 t/page.t
 t/pageset.t
+t/request_path.t
 t/session-cgisession.t
 t/session-cookie.t
 t/session-dbic.t

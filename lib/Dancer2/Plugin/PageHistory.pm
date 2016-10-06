@@ -198,17 +198,9 @@ sub BUILD {
 sub add_to_history {
     my ( $plugin, @args ) = @_;
 
-    my %args = (
-        path         => $plugin->app->request->path,
-        query_string => $plugin->app->request->env->{QUERY_STRING},
-        @args,
-    );
-
-    $plugin->app->log( "debug", "adding page to history: ", \%args );
-
     my $history = $plugin->history;
 
-    $history->add( %args );
+    $history->add( request => $plugin->app->request, @args );
 
     $plugin->app->session->write(
         $plugin->history_name => unbless( $history->pages ) );

@@ -6,6 +6,7 @@ Dancer2::Plugin::PageHistory::PageSet - collection of pages with accessors
 
 =cut
 
+use Carp qw(croak);
 use Scalar::Util qw(blessed);
 use Sub::Quote qw(quote_sub);
 use Dancer2::Core::Types qw(ArrayRef HashRef InstanceOf Int Maybe Str);
@@ -145,8 +146,6 @@ sub add {
 
     my $type = delete $args{type} || $self->default_type;
 
-    die "args to add must include a defined path" unless defined $args{path};
-
     my $page = Dancer2::Plugin::PageHistory::Page->new(%args);
 
     if (   !$self->pages->{$type}
@@ -179,7 +178,7 @@ If page is not found then L</fallback_page> is returned instead.
 sub page_index {
     my ( $self, $index, $type ) = @_;
 
-    die "index arg must be supplied to page_index" unless defined $index;
+    croak "index arg must be supplied to page_index" unless defined $index;
     $type = $self->default_type unless $type;
 
     if ( $self->has_pages && defined $self->pages->{$type}->[$index] ) {

@@ -13,6 +13,7 @@ all_pod_files_spelling_ok();
 
 __END__
 ajax
+BUILDARGS
 CGISession
 DBIC
 eserte

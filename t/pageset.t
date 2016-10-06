@@ -167,18 +167,21 @@ cmp_ok( $pages->previous_page->path,
 
 # add
 
-throws_ok( sub { $pages->add }, qr/must include a defined path/,
-    "add nothing" );
+throws_ok(
+    sub { $pages->add },
+    qr/Either 'request' or 'path' must be supplied as arg to new/,
+    "add nothing"
+);
 
 throws_ok(
     sub { $pages->add( type => "foo" ) },
-    qr/must include.+path/,
+    qr/Either 'request' or 'path' must be supplied as arg to new/,
     "add with type but no path"
 );
 
 throws_ok(
     sub { $pages->add( type => "foo", path => undef ) },
-    qr/must include.+path/,
+    qr/Either 'request' or 'path' must be supplied as arg to new/,
     "add with type and undef path"
 );
 
